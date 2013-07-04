@@ -41,12 +41,15 @@ orto2012_layer = L.tileLayer.wms 'http://kartta.hel.fi/wms/code4europe.mapdef',
     attribution: '&copy;Kaupunkimittausosasto, Helsinki 01/2013'
 orto_layers[orto_layers.length - 1] = orto2012_layer
 ###
-
+###
 osm_roads_layer = L.tileLayer.wms GWC_BASE_URL + "wms/",
     layers: 'osm:planet_osm_line'
     format: 'image/png'
     transparent: true
 osm_roads_layer.setOpacity 0.6
+osm_roads_layer.setZIndex 5
+###
+osm_roads_layer = new L.StamenTileLayer('toner')
 osm_roads_layer.setZIndex 5
 
 marker = null
