@@ -326,7 +326,7 @@ building_styler = (feat) ->
     ret =
         weight: 1
         opacity: 1.0
-        fillOpacity: 0.4
+        fillOpacity: 1.0
     year = parseInt feat.properties.valmvuosi
     if current_state.year and year > current_state.year
         ret.opacity = 0
@@ -381,14 +381,14 @@ display_building_modal = (feat) ->
     modal.modal('show')
 
 refresh_buildings = ->
-    if map.getZoom() < 16 or not window.show_buildings
+    if map.getZoom() < 15 or not window.show_buildings
         if building_layer
             map.removeLayer building_layer
             building_layer = null
         return
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
     get_wfs 'hel:rakennukset',
-        maxFeatures: 500
+        maxFeatures: 1500
         bbox: str
         propertyName: 'valmvuosi,osoite,kayttotark_taso3,wkb_geometry_s2'
         , (data) ->
