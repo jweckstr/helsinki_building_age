@@ -341,11 +341,14 @@ building_styler = (feat) ->
     else
         start_year = 1890
         end_year = new Date().getFullYear()
-        if year < start_year
-            year = start_year
+        #if year < start_year
+        #    year = start_year
+        year += (2012 - current_state.year)
         n = Math.floor (year - start_year) * colors.length / (end_year - start_year)
         n = colors.length - n - 1
         color = colors[n]
+        if not color
+            color = colors[colors.length-1]
     ret.color = color
     return ret
 
