@@ -3,6 +3,7 @@ map = L.map 'map',
     minZoom: 11
     maxBounds: bounds
 map.setView([60.171944, 24.941389], 15)
+map.doubleClickZoom.disable()
 hash = new L.Hash map
 
 osm_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/999/256/{z}/{x}/{y}.png',
@@ -394,7 +395,7 @@ refresh_buildings = ->
     get_wfs 'hel:rakennukset',
         maxFeatures: 1500
         bbox: str
-        propertyName: 'valmvuosi,osoite,kayttotark_taso3,wkb_geometry_s2'
+        propertyName: 'valmvuosi,osoite,wkb_geometry_s2'
         , (data) ->
             if building_layer
                 map.removeLayer building_layer
@@ -405,11 +406,13 @@ refresh_buildings = ->
                     address = feat.properties.osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
+                    ###
                     use = feat.properties.kayttotark_taso3
                     if use
                         use = use.replace /(\d)+ /, ""
+                    ###
                     popup = $("<div></div>")
-                    popup.append $("<b>Valm.vuosi #{year}</b><br/>#{use}<br/><b>#{address}</b><br/>")
+                    popup.append $("<b>#{address}</b><br/>Valm.vuosi #{year}<br/>")
                     button = $("<button class='btn btn-primary'>Näytä lisätietoja</button>")
                     button.css
                         "margin-top": "20px"
