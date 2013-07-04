@@ -270,6 +270,7 @@ slider = $("#slider").slider
     max: slider_max
     value: slider_max
     tooltip: 'hide'
+    handle: 'triangle'
 
 slider.on 'slide', (ev) ->
     val = ev.value
@@ -323,7 +324,7 @@ $(document).keydown (ev) ->
 
 update_screen slider_max
 
-colors = ['#feedde', '#fdd0a2', '#fdae6b', '#fd8d3c', '#f16913', '#d94801', '#8c2d04']
+colors = ['#FFFFD9', '#EDF8B1', '#C7E9B4', '#7FCDBB', '#41B6C4', '#1D91C0', '#225EA8', '#253494', '#081D58' ]
 
 building_styler = (feat) ->
     ret =
