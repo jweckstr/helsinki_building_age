@@ -4,12 +4,12 @@ map = L.map 'map',
     maxBounds: bounds
 map.setView([60.171944, 24.941389], 15)
 map.doubleClickZoom.disable()
-hash = new L.Hash map
 
 osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png',
     maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 )
+osm_roads_layer.setZIndex 5
 
 get_wfs = (type, args, callback) ->
     url = GEOSERVER_BASE_URL + 'wfs/'
@@ -24,34 +24,6 @@ get_wfs = (type, args, callback) ->
         params[key] = args[key]
     $.getJSON url, params, callback
 
-make_tile_layer = (year) ->
-    opts =
-        tms: true
-        maxZoom: 18
-    layer = L.tileLayer GWC_BASE_URL + "tms/1.0.0/hel:orto#{year}@EPSG:900913@jpeg/{z}/{x}/{y}.jpeg", opts
-    return layer
-
-orto_years = [
-    1943, 1964, 1976, 1988, 2012
-]
-orto_layers = (make_tile_layer year for year in orto_years)
-###
-orto2012_layer = L.tileLayer.wms 'http://kartta.hel.fi/wms/code4europe.mapdef',
-    layers: 'Ortoilmakuva_05cm_2012'
-    format: 'image/jpeg'
-    attribution: '&copy;Kaupunkimittausosasto, Helsinki 01/2013'
-orto_layers[orto_layers.length - 1] = orto2012_layer
-###
-###
-osm_roads_layer = L.tileLayer.wms GWC_BASE_URL + "wms/",
-    layers: 'osm:planet_osm_line'
-    format: 'image/png'
-    transparent: true
-osm_roads_layer.setOpacity 0.6
-osm_roads_layer.setZIndex 5
-###
-#osm_roads_layer = new L.StamenTileLayer('toner')
-osm_roads_layer.setZIndex 5
 
 marker = null
 input_addr_map = null
@@ -161,39 +133,11 @@ window.show_buildings = false
 window.show_roads = false
 
 N_STEPS = 100
-MIN_OPACITY = 0.2
 
-layer_count = orto_layers.length
 slider_max = 2012
 slider_min = 1812
 
 current_state = {}
-
-update_years = (state) ->
-    year_a_idx = state.layer_a_idx
-    opacity = 1 - state.layer_b_opacity
-    for year_el, idx in $("#year_list div")
-        if idx == year_a_idx
-            opa = opacity * (1 - MIN_OPACITY)
-        else if idx == year_a_idx + 1
-            opa = (1 - opacity) * (1 - MIN_OPACITY)
-        else
-            opa = 0
-        $(year_el).css {"opacity": MIN_OPACITY + opa}
-
-calculate_year_data = (val) ->
-    layer_a_idx = Math.floor val / N_STEPS
-    if val == slider_max
-        layer_a_idx = layer_count - 2
-    layer_b_op = (val % N_STEPS) / N_STEPS
-    if val == (layer_a_idx + 1) * N_STEPS
-        layer_b_op = 1.0
-    # Figure out the year between the two orto imagery years.
-    year_a = orto_years[layer_a_idx]
-    diff = orto_years[layer_a_idx + 1] - year_a
-    year = Math.round year_a + diff * layer_b_op
-
-    return {layer_a_idx: layer_a_idx, layer_b_opacity: layer_b_op, year: year}
 
 redraw_buildings = ->
     if not building_layer
@@ -206,16 +150,6 @@ update_screen = (val, force_refresh) ->
         current_state.year = val
         redraw_buildings()
         
-
-
-# When the map starts moving, remove all non-visible layers
-# to save on bandwidth cost.
-map.on "movestart", (ev) ->
-    for l in orto_layers
-        if not l.visible and l.added
-            map.removeLayer l
-            l.added = false
-
 
 slider = $("#slider").slider
     min: slider_min
@@ -236,26 +170,6 @@ select_year = (idx) ->
     val = idx * N_STEPS
     slider.slider 'setValue', val
     update_screen val
-
-initialize_years = ->
-    $year_list = $("#year_list")
-    y_width = $year_list.width() / orto_years.length
-    for y, idx in orto_years
-        $text_el = $("<div>#{y}</div>")
-        $text_el.css
-            "font-size": "24px"
-            "width": y_width
-            "float": "left"
-            "opacity": MIN_OPACITY
-            "text-align": "center"
-            "cursor": "pointer"
-        $text_el.data "index", idx
-        $text_el.click ->
-            idx = $(@).data 'index'
-            select_year idx
-        $year_list.append $text_el
-
-initialize_years()
 
 $(document).keydown (ev) ->
     val = current_state.val
