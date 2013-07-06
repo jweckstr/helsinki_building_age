@@ -84,7 +84,7 @@ $("#address-input").on 'change', ->
         marker.addTo(map)
     else
         marker.setLatLng([coords[1], coords[0]])
-    map.setView([coords[1], coords[0]], 17)
+    map.setView([coords[1], coords[0]], 16)
 
 input_district_map = null
 active_district = null
