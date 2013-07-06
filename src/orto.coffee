@@ -304,47 +304,10 @@ $(".readmore").click ->
     $(".moreinfo").slideDown()
     $(this).hide()
 
-BuildingControl = L.Control.extend
-    click: ->
-        if window.show_buildings
-            $(this).html "Näytä rakennukset"
-            $(this).addClass "btn-success"
-            $(this).removeClass "btn-danger"
-        else
-            $(this).html "Piilota rakennukset"
-            $(this).removeClass "btn-success"
-            $(this).addClass "btn-danger"
 
-        window.show_buildings = not window.show_buildings
-        refresh_buildings()
-    options:
-        position: 'topright'
-    onAdd: (map) ->
-        $button = $('<button id="show-buildings-btn" class="btn btn-success">Näytä rakennukset</button>')
-        $button.click @.click
-        return $button[0]
+map.addLayer osm_roads_layer
+window.show_buildings = not window.show_buildings
+refresh_buildings()
 
-new BuildingControl().addTo map
+            
 
-RoadsControl = L.Control.extend
-    click: ->
-        if window.show_roads
-            $(this).html "Näytä tiet"
-            $(this).addClass "btn-success"
-            $(this).removeClass "btn-danger"
-            map.removeLayer osm_roads_layer
-        else
-            $(this).html "Piilota tiet"
-            $(this).removeClass "btn-success"
-            $(this).addClass "btn-danger"
-            map.addLayer osm_roads_layer
-
-        window.show_roads = not window.show_roads
-    options:
-        position: 'topright'
-    onAdd: (map) ->
-        $button = $('<button id="show-roads-btn" class="btn btn-success">Näytä tiet</button>')
-        $button.click @.click
-        return $button[0]
-
-new RoadsControl().addTo map
