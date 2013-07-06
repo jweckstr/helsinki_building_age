@@ -201,62 +201,11 @@ redraw_buildings = ->
     building_layer.setStyle building_styler
 
 update_screen = (val, force_refresh) ->
-    ###if not window.show_orto
-        for l in orto_layers
-            if not l.added
-                continue
-            map.removeLayer l
-            l.added = false
-        if not osm_layer.added
-            
-            osm_layer.addTo map
-        return
-    ###
-    if not force_refresh and val == current_state.val
-        return
-    current_state.val = val
-    state = calculate_year_data val
-    current_state.layer_a_idx = state.layer_a_idx
-    visible_layers = [orto_layers[state.layer_a_idx], orto_layers[state.layer_a_idx+1]]
-    visible_layers[0].setOpacity 1 - state.layer_b_opacity
-    visible_layers[1].setOpacity state.layer_b_opacity
-    current_state.visible_layers = visible_layers
-    if current_state.year != year
-        current_state.year = year
-        year_changed = true
-    else
-        year_changed = false
-
-    update_years state
-
-    $("#year_a").html orto_years[state.layer_a_idx]
-    $("#year_b").html orto_years[state.layer_a_idx + 1]
-    $("#year_a").css {opacity: 1 - state.layer_b_opacity}
-    $("#year_b").css {opacity: state.layer_b_opacity}
-
-    $("#current_year").html year
-
-    # Set visibility flags on all layers and hide the non-visible layers.
-    for al in orto_layers
-        match = false
-        for l in visible_layers
-            if l == al
-                match = true
-                break
-        if not match
-            al.setOpacity 0
-            al.visible = false
-        else
-            al.visible = true
-
-    # Add the visible layers that haven't yet been added.
-    for l in visible_layers
-        if not l.added
-            l.addTo map
-            l.added = true
-
-    if year_changed
+    
+    if current_state.year != val
+        current_state.year = val
         redraw_buildings()
+        
 
 
 # When the map starts moving, remove all non-visible layers
@@ -277,10 +226,10 @@ slider = $("#slider").slider
 
 slider.on 'slide', (ev) ->
     val = ev.value
-    console.log "slider: #{val}"
-    current_state.year = val
-    redraw_buildings()
-    #update_screen val
+    #console.log "slider: #{val}"
+    #current_state.year = val
+    #redraw_buildings()
+    update_screen val
 
 
 select_year = (idx) ->
