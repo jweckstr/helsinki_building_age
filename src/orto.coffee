@@ -1,8 +1,12 @@
+if $("body").width() < 1200 and $("body").height() < 1000
+    startzoom = 15
+else
+    startzoom = 16
 bounds = new L.LatLngBounds [60.114,24.750], [60.32, 25.300]
 map = L.map 'map',
     minZoom: 11
     maxBounds: bounds
-map.setView([60.171944, 24.941389], 15)
+map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
 
 osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png',
@@ -167,6 +171,7 @@ select_year = (val) ->
     slider.slider 'setValue', val
     update_screen val
 
+###
 initialize_years = ->
     years = [1812,1912,2012]
     $year_list = $("#year_list")
@@ -187,7 +192,7 @@ initialize_years = ->
         $year_list.append $text_el
 
 initialize_years()
-
+###
 $(document).keydown (ev) ->
     val = current_state.val
     idx = Math.floor val / N_STEPS
@@ -281,7 +286,7 @@ refresh_buildings = ->
         return
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
     get_wfs 'hel:rakennukset',
-        maxFeatures: 1500
+        maxFeatures: 2000
         bbox: str
         propertyName: 'valmvuosi,osoite,wkb_geometry_s2'
         , (data) ->
