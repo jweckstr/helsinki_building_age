@@ -164,7 +164,8 @@ N_STEPS = 100
 MIN_OPACITY = 0.2
 
 layer_count = orto_layers.length
-slider_max = (layer_count - 1) * N_STEPS
+slider_max = 2012
+slider_min = 1812
 
 current_state = {}
 
@@ -268,6 +269,7 @@ map.on "movestart", (ev) ->
 
 
 slider = $("#slider").slider
+    min: slider_min
     max: slider_max
     value: slider_max
     tooltip: 'hide'
@@ -275,7 +277,10 @@ slider = $("#slider").slider
 
 slider.on 'slide', (ev) ->
     val = ev.value
-    update_screen val
+    console.log "slider: #{val}"
+    current_state.year = val
+    redraw_buildings()
+    #update_screen val
 
 
 select_year = (idx) ->
