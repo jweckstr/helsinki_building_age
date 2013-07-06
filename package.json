@@ -1,16 +1,16 @@
 {
-  "name": "helsinki-orto",
+  "name": "helsinki-bage",
   "version": "0.1.0",
-  "description": "HTML5 app for displaying Helsinki ortographic imagery",
+  "description": "An interactive map visualizing building age in Helsinki",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/City-of-Helsinki/helsinki-orto.git"
+    "url": "git://github.com/salicylic/helsinki-bage.git"
   },
-  "author": "Juha Yrjola",
+  "author": "Jan Wolski",
   "license": "BSD",
   "readmeFilename": "README.md",
   "devDependencies": {
