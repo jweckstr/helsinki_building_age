@@ -7,7 +7,7 @@ map.doubleClickZoom.disable()
 
 osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png',
     maxZoom: 18,
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+    #attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 )
 osm_roads_layer.setZIndex 5
 
@@ -149,6 +149,7 @@ update_screen = (val, force_refresh) ->
     if current_state.year != val
         current_state.year = val
         redraw_buildings()
+        $("#current_year").html val
         
 
 slider = $("#slider").slider
@@ -159,17 +160,33 @@ slider = $("#slider").slider
     handle: 'triangle'
 
 slider.on 'slide', (ev) ->
-    val = ev.value
-    #console.log "slider: #{val}"
-    #current_state.year = val
-    #redraw_buildings()
-    update_screen val
+    update_screen ev.value
 
 
-select_year = (idx) ->
-    val = idx * N_STEPS
+select_year = (val) ->
     slider.slider 'setValue', val
     update_screen val
+
+initialize_years = ->
+    years = [1812,1912,2012]
+    $year_list = $("#year_list")
+    y_width = $year_list.width() / years.length
+    for y, idx in years
+        $text_el = $("<div>#{y}</div>")
+        $text_el.css
+            "font-size": "24px"
+            "width": y_width
+            "float": "left"
+            "opacity": 1
+            "text-align": "center"
+            "cursor": "pointer"
+        $text_el.data "index", idx
+        $text_el.click ->
+            idx = $(@).data 'index'
+            select_year idx
+        $year_list.append $text_el
+
+initialize_years()
 
 $(document).keydown (ev) ->
     val = current_state.val
@@ -211,7 +228,7 @@ building_styler = (feat) ->
         end_year = slider_max
         #if year < start_year
         #    year = start_year
-        year += (end_year - current_state.year)
+        year += (end_year-1 - current_state.year)
         n = Math.floor (year - start_year) * colors.length / (end_year - start_year)
         n = colors.length - n - 1
         color = colors[n]
@@ -309,5 +326,25 @@ map.addLayer osm_roads_layer
 window.show_buildings = not window.show_buildings
 refresh_buildings()
 
-            
+animating = false
+int = null
+$("#play-btn").click ->
+    if animating
+        clearInterval int
+        $(this).html "&#9658;"
+    else
+        $(this).html "&#9632;"
+        if current_state.year is slider_max
+            select_year slider_min
+        int = setInterval () ->
+                newyear = current_state.year + 1
+                if newyear <= slider_max
+                    select_year newyear
+                else
+                    clearInterval int
+                    select_year slider_max
+                    $("#play-btn").html "&#9658;"
+                    animating = false
+            , 50
+    animating =  not animating
 
