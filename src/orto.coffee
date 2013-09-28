@@ -6,6 +6,8 @@ bounds = new L.LatLngBounds [60.114,24.750], [60.32, 25.300]
 map = L.map 'map',
     minZoom: 11
     maxBounds: bounds
+    zoomControl: false
+map.addControl(new L.Control.Zoom({"position":"topright"}))
 map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
 
