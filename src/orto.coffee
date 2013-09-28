@@ -38,6 +38,10 @@ $("#address-input").typeahead(
             ret = []
             input_addr_map = []
             for obj in objs
+                if obj.name.indexOf(", Espoo") > -1
+                    continue
+                if obj.name.indexOf(", Vantaa") > -1
+                    continue   
                 ret.push(obj.name)
             input_addr_map = objs
             process_cb(ret)
