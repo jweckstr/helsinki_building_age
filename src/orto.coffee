@@ -13,7 +13,6 @@ osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB9
     maxZoom: 18,
     #attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 )
-osm_roads_layer.setZIndex 5
 
 get_wfs = (type, args, callback) ->
     url = GEOSERVER_BASE_URL + 'wfs/'
@@ -27,7 +26,6 @@ get_wfs = (type, args, callback) ->
     for key of args
         params[key] = args[key]
     $.getJSON url, params, callback
-
 
 marker = null
 input_addr_map = null
@@ -45,7 +43,7 @@ $("#address-input").typeahead(
             process_cb(ret)
         )
 )
-        
+###        
 nearby_markers = []
 
 find_nearby_addresses = (target_coords) ->
@@ -69,6 +67,7 @@ find_nearby_addresses = (target_coords) ->
             el.append($("<li>#{addr.name} #{distance} m</li>"))
             index++
     )
+###
 $("#address-input").on 'change', ->
     match_obj = null
     for obj in input_addr_map
@@ -80,11 +79,8 @@ $("#address-input").on 'change', ->
     coords = obj.location.coordinates
     if not marker
         marker = L.marker([coords[1], coords[0]],
-            draggable: true
+            draggable: false
         )
-        marker.on 'dragend', (e) ->
-            coords = marker.getLatLng()
-            find_nearby_addresses([coords.lat, coords.lng])
         marker.addTo(map)
     else
         marker.setLatLng([coords[1], coords[0]])
@@ -105,7 +101,6 @@ $("#district-input").typeahead(
             process_cb(ret)
         )
 )
-
 
 $("#district-input").on 'change', ->
     match_obj = null
@@ -132,11 +127,6 @@ $("#district-input").on 'change', ->
     borders.addTo map
     map.fitBounds borders.getBounds()
     active_district = borders
-
-window.show_buildings = false
-window.show_roads = false
-
-N_STEPS = 100
 
 slider_max = 2012
 slider_min = 1812
@@ -192,7 +182,7 @@ initialize_years = ->
         $year_list.append $text_el
 
 initialize_years()
-###
+
 $(document).keydown (ev) ->
     val = current_state.val
     idx = Math.floor val / N_STEPS
@@ -212,6 +202,7 @@ $(document).keydown (ev) ->
     if target.closest("#map").length
         return
     select_year idx
+###
 
 update_screen slider_max
 
@@ -279,7 +270,7 @@ display_building_modal = (feat) ->
     modal.modal('show')
 
 refresh_buildings = ->
-    if map.getZoom() < 15 or not window.show_buildings
+    if map.getZoom() < 15
         if building_layer
             map.removeLayer building_layer
             building_layer = null
@@ -326,10 +317,7 @@ $(".infobut").click ->
     $(".infodiv").slideToggle()
 
 
-
-
 map.addLayer osm_roads_layer
-window.show_buildings = not window.show_buildings
 refresh_buildings()
 
 animating = false
