@@ -44,20 +44,44 @@
         <![endif]-->
         <div id="map" style="position: fixed; top:0px; left:0;right:0;bottom:0;background-color: #000;"></div>
 
-        <div class="container" style="position: fixed; left: 20px; top: 20px; background-color: rgba(20,20,20,.9); padding:10px; padding-top: 0">
-            <h2>Helsingin rakennuskannan kehitys</h2>
+        <div class="container" style="position: fixed; left: 20px; top: 20px; background-color: rgba(20,20,20,.95); padding:20px; padding-top: 0; width: 620px; border:1px solid;border-color: #444">
+            <div class="row">
+                <div class="span7">
+                    <h2>Helsingin rakennuskannan kehitys</h2>
+                </div>
+                <div class="span1">
+                    <img src="images/info.png" style="margin-top: 10px">
+                </div>
+            </div>
+            <div class="row">
+                    <div class="span4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+                    <div class="span4">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
+            </div>
+            
+            <div class="row">
+                <div class="span8">
+                    <hr>
+                </div>
+            </div>
+            
+                
             <fieldset>
                 <input type="text" class="span4" id="address-input" placeholder="Syötä osoite...">
                 <input type="text" class="span4" id="district-input" placeholder="Syötä kaupunginosa...">
             </fieldset>
+                
 
-            <div style="clear: both"></div>
             <div class="row">
-                <div class="span1"><button id="play-btn" class="btn btn-primary">&#9658;</button></div>
-                
-                    <div id="slider" class="span7"></div>
-                
-            </div>    
+
+                        <button id="play-btn" class="btn btn-primary span1" style="margin-top:6px; height: ">&#9658;</button>
+                        <div class="span7">
+                            <div id="current_year" class="row" style="font-size: 14px; margin-left: auto; margin-right: auto; text-align: center;">
+                            </div>
+                            <div id="slider" class="span7 row"></div>
+                        </div>
+                        
+  
+            </div>  
         </div> <!-- /container -->
         
 
