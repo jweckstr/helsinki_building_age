@@ -303,7 +303,7 @@ refresh_buildings = ->
                     ###
                     popup = $("<div></div>")
                     popup.append $("<b>#{address}</b><br/>Valm.vuosi #{year}<br/>")
-                    button = $("<button class='btn btn-primary'>Näytä lisätietoja</button>")
+                    button = $("<button class='btn'>Näytä lisätietoja</button>")
                     button.css
                         "margin-top": "20px"
                     popup.append button
