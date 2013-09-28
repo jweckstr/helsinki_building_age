@@ -11,7 +11,7 @@ map.addControl(new L.Control.Zoom({"position":"topright"}))
 map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
 
-osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png',
+osm_roads_layer = L.tileLayer('http://a.tiles.mapbox.com/v3/aspirin.map-0jwzmn2s/{z}/{x}/{y}.png',
     maxZoom: 18,
     #attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 )
