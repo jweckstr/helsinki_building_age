@@ -322,9 +322,10 @@ refresh_buildings = ->
 
 map.on 'moveend', refresh_buildings
 
-$(".readmore").click ->
-    $(".moreinfo").slideDown()
-    $(this).hide()
+$(".infobut").click ->
+    $(".infodiv").slideToggle()
+
+
 
 
 map.addLayer osm_roads_layer
