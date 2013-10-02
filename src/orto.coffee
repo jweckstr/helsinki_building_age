@@ -10,8 +10,9 @@ map = L.map 'map',
 map.addControl(new L.Control.Zoom({"position":"topright"}))
 map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
-#'http://a.tiles.mapbox.com/v3/aspirin.map-0jwzmn2s/{z}/{x}/{y}.png'
-osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png',
+#'http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png'
+#'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png'
+osm_roads_layer = L.tileLayer('http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png',
     maxZoom: 18,
     #attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 )
@@ -129,6 +130,7 @@ $("#district-input").on 'change', ->
         style:
             weight: 2
             fillOpacity: 0.08
+            color: "#f0f"
     borders.bindPopup match_obj.name
     borders.addTo map
     map.fitBounds borders.getBounds()
@@ -283,7 +285,7 @@ refresh_buildings = ->
         return
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
     get_wfs 'hel:rakennukset',
-        maxFeatures: 2000
+        maxFeatures: 2500
         bbox: str
         propertyName: 'valmvuosi,osoite,wkb_geometry_s2'
         , (data) ->
@@ -333,7 +335,7 @@ $("#play-btn").click ->
         clearInterval int
         $(this).html "&#9658;"
     else
-        $(this).html "&#9632;"
+        $(this).html "❚❚"
         if current_state.year is slider_max
             select_year slider_min
         int = setInterval () ->
