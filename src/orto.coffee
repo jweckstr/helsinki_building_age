@@ -282,7 +282,9 @@ refresh_buildings = ->
         if building_layer
             map.removeLayer building_layer
             building_layer = null
+        $("#zoominfo").show(); 
         return
+    $("#zoominfo").hide();
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
     get_wfs 'hel:rakennukset',
         maxFeatures: 2500
@@ -333,9 +335,9 @@ int = null
 $("#play-btn").click ->
     if animating
         clearInterval int
-        $(this).html "&#9658;"
+        $(this).html '<i class="icon-play"></i>'
     else
-        $(this).html "❚❚"
+        $(this).html '<i class="icon-pause"></i>'
         if current_state.year is slider_max
             select_year slider_min
         int = setInterval () ->

@@ -11,16 +11,16 @@
         <meta name="viewport" content="width=device-width">
         <meta property="og:image" content="http://wolski.fi/bage/images/bage.png" /> 
 
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
         <link href="vendor/css/darkstrap.min.css" rel="stylesheet">
         <link href="vendor/css/slider.css" rel="stylesheet">
 
-        <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+        <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <script src="http://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script></script>
         <!-- Leaflet map library -->
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
-        <script src="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
+        <script src="//cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
         <script type="text/javascript" src="vendor/js/leaflet-hash.js"></script>
         <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
 
@@ -32,6 +32,16 @@
                 color: #333;
             }
             h3{font-weight: lighter}
+            #zoominfo{
+                position: fixed;
+                bottom: 50%;
+                font-size: 22px;
+                color: #999;
+                width: 100%;
+                text-align: center;
+                pointer-events: none;
+            }
+            [class^="icon-"],[class*=" icon-"]{background-image: url("//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/img/glyphicons-halflings.png")}
         </style>
         <script>
             GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
@@ -44,7 +54,7 @@
             <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
         <![endif]-->
         <div id="map" style="position: fixed; top:0px; left:0;right:0;bottom:0;background-color: #000;"></div>
-
+        <div id="zoominfo">Zoomaa lähemmäs nähdäksesi rakennukset kartalla</div>
         <div class="container" style="position: fixed; left: 10px; top: 10px; background-color: rgba(20,20,20,.95); padding:20px; padding-top: 0; width: 620px; border:1px solid;border-color: #444">
             <div class="row">
                 <div class="span7">
@@ -56,7 +66,7 @@
             </div>
             <div class="infodiv hide">
                 <div class="row">
-                        <div class="span4">Helsingin rakennukset sävytettynä rakentamisvuoden mukaan. Vaaleampi ja keltaisempi on uudempi. Klikkaa yksittäistä rakennusta nähdäksesi yksityiskohtaiset tiedot. Alla olevilla kentillä voit hakea rekennusta osoitteella tai kaupunginosaa sen nimellä.</div>
+                        <div class="span4">Helsingin rakennukset sävytettynä rakentamisvuoden mukaan. Vaaleampi ja keltaisempi on uudempi. Klikkaa yksittäistä rakennusta nähdäksesi yksityiskohtaiset tiedot. Alla olevilla kentillä voit hakea rekennusta osoitteella tai kaupunginosaa sen nimellä.<i class="icon-play"></i></div>
                         <div class="span4"><p>Rakenustiedot (2012 tilanne):<br><a href="http://www.hri.fi/fi/data/helsingin-kaupungin-rakennusrekisterin-ote-62012/">Helsingin kaupungin rakennusrekisteri</a></p>Toteutus: <script>document.write('<a href=\"mai' + 'lto:' + 'jan' + '@' + 'wolski.fi' + '\">Jan Wolski</a>');</script><br>
                             (perustuu <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> -sovellukseen)</div>
                 </div>
@@ -76,7 +86,7 @@
 
             <div class="row">
 
-                        <button id="play-btn" class="btn span1" style="margin-top:6px; height: ">&#9658;</button>
+                        <button id="play-btn" class="btn span1" style="margin-top:6px;"><i class="icon-play"></i></button>
                         <div class="span7">
                             <div id="current_year" class="row" style="font-size: 14px; margin-left: auto; margin-right: auto; text-align: center;"></div>
                             <div id="slider" class="span7 row"></div>
