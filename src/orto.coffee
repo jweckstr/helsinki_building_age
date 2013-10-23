@@ -146,12 +146,11 @@ redraw_buildings = ->
         return
     building_layer.setStyle building_styler
 
-update_screen = (val, force_refresh) ->
-    
+update_screen = (val, force_refresh) ->  
     if current_state.year != val
         current_state.year = val
         redraw_buildings()
-        $("#current_year").html val
+        $("#mainhead").html("Helsingin rakennuskannan kehitys 1812-"+val);
         
 
 slider = $("#slider").slider
