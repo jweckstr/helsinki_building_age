@@ -11,7 +11,7 @@
         <meta name="viewport" content="width=device-width">
         <meta property="og:image" content="http://wolski.fi/bage/images/bage.png" /> 
 
-        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.min.css" rel="stylesheet">
+        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
         <link href="vendor/css/darkstrap.min.css" rel="stylesheet">
         <link href="vendor/css/slider.css" rel="stylesheet">
 
@@ -31,7 +31,7 @@
             .leaflet-popup-content{
                 color: #333;
             }
-            h3{font-weight: lighter}
+            h3{font-weight: lighter;}
             #zoominfo{
                 position: fixed;
                 bottom: 50%;
@@ -41,7 +41,31 @@
                 text-align: center;
                 pointer-events: none;
             }
-            [class^="icon-"],[class*=" icon-"]{background-image: url("//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/img/glyphicons-halflings.png")}
+            /*
+            #play-btn{background-color: #ff00b0;}
+            */
+            [class^="icon-"],
+            [class*=" icon-"] {
+              display: inline-block;
+              width: 14px;
+              height: 14px;
+              *margin-right: .3em;
+              line-height: 14px;
+              vertical-align: text-top;
+              background-image: url("//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/img/glyphicons-halflings.png");
+              background-position: 14px 14px;
+              background-repeat: no-repeat;
+              margin-top: 1px;
+            }
+            .icon-play {
+              background-position: -264px -72px;
+            }
+            .icon-pause {
+              background-position: -288px -72px;
+            }
+            .icon-stop {
+              background-position: -312px -72px;
+            }
         </style>
         <script>
             GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
@@ -55,7 +79,7 @@
         <![endif]-->
         <div id="map" style="position: fixed; top:0px; left:0;right:0;bottom:0;background-color: #000;"></div>
         <div id="zoominfo">Zoomaa lähemmäs nähdäksesi rakennukset kartalla</div>
-        <div class="container" style="position: fixed; left: 10px; top: 10px; background-color: rgba(20,20,20,.95); padding:20px; padding-top: 0; width: 620px; border:1px solid;border-color: #444">
+        <div class="container" style="position: fixed; left: 10px; top: 10px; background-color: rgba(10,10,10,.97); padding:20px; padding-top: 0; width: 620px; border:1px solid;border-color: #444">
             <div class="row">
                 <div class="span7">
                     <h3>Helsingin rakennuskannan kehitys</h3>

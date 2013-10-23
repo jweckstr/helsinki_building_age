@@ -92,15 +92,10 @@
 }
 .slider-selection {
   background-color: #253494;
-  background-image: -moz-linear-gradient(right, #EDF8B1, #253494);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#EDF8B1), to(#253494));
-  background-image: -webkit-linear-gradient(right, #EDF8B1, #253494);
-  background-image: -o-linear-gradient(right, #EDF8B1, #253494);
-  background-image: linear-gradient(to left, #EDF8B1, #253494);
+  background-image: url('../../images/ylgnbu.png');
   background-repeat: no-repeat;
   background-position: right top;
   background-size: 540px 100%;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFFFFFD9', endColorstr='#FF081D58', GradientType=0);
 
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
