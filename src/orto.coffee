@@ -334,9 +334,9 @@ int = null
 $("#play-btn").click ->
     if animating
         clearInterval int
-        $(this).html '<i class="icon-play"></i>'
+        $(this).html '<span class="glyphicon glyphicon-play"></span>'
     else
-        $(this).html '<i class="icon-pause"></i>'
+        $(this).html '<span class="glyphicon glyphicon-pause"></span>'
         if current_state.year is slider_max
             select_year slider_min
         int = setInterval () ->

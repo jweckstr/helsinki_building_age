@@ -44,28 +44,33 @@
             /*
             #play-btn{background-color: #ff00b0;}
             */
-            [class^="icon-"],
-            [class*=" icon-"] {
-              display: inline-block;
-              width: 14px;
-              height: 14px;
-              *margin-right: .3em;
-              line-height: 14px;
-              vertical-align: text-top;
-              background-image: url("//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/img/glyphicons-halflings.png");
-              background-position: 14px 14px;
-              background-repeat: no-repeat;
-              margin-top: 1px;
-            }
-            .icon-play {
-              background-position: -264px -72px;
-            }
-            .icon-pause {
-              background-position: -288px -72px;
-            }
-            .icon-stop {
-              background-position: -312px -72px;
-            }
+            @font-face {
+              font-family: 'Glyphicons Halflings';
+              src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot');
+              src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+              }
+
+              .glyphicon {
+                  position: relative;
+                  top: 1px;
+                  display: inline-block;
+                  font-family: 'Glyphicons Halflings';
+                  -webkit-font-smoothing: antialiased;
+                  font-style: normal;
+                  font-weight: normal;
+                  line-height: 1;
+              }
+              .glyphicon-play:before {
+                  content: "\e072";
+              }
+
+              .glyphicon-pause:before {
+                  content: "\e073";
+              }
+
+              .glyphicon-stop:before {
+                  content: "\e074";
+              }
         </style>
         <script>
             GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
@@ -110,7 +115,7 @@
 
             <div class="row">
 
-                        <button id="play-btn" class="btn span1" style="margin-top:6px;"><i class="icon-play"></i></button>
+                        <button id="play-btn" class="btn btn-default btn-lg span1" style="margin-top:5px;"><span class="glyphicon glyphicon-play"></span></button>
                         <div class="span7">
                             <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
                             <div id="slider" class="span7"></div>
