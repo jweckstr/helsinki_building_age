@@ -325,7 +325,6 @@ map.on 'moveend', refresh_buildings
 $(".infobut").click ->
     $(".infodiv").slideToggle()
 
-new L.Hash(map)
 map.addLayer osm_roads_layer
 refresh_buildings()
 
