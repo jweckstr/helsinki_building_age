@@ -62,6 +62,8 @@ $("#address-input").on 'change', ->
             match_obj = obj
             break
     if not match_obj
+        if marker
+            marker.setLatLng([0,0])
         return
     coords = obj.location.coordinates
     if not marker
