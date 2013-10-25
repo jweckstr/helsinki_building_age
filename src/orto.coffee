@@ -10,12 +10,10 @@ map = L.map 'map',
 map.addControl(new L.Control.Zoom({"position":"topright"}))
 map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
-#'http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png'
 #'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png'
 osm_roads_layer = L.tileLayer('http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png',
-    maxZoom: 18,
-    #attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-)
+    maxZoom: 18
+    )
 
 get_wfs = (type, args, callback) ->
     url = GEOSERVER_BASE_URL + 'wfs/'
@@ -50,31 +48,7 @@ $("#address-input").typeahead(
             process_cb(ret)
         )
 )
-###        
-nearby_markers = []
 
-find_nearby_addresses = (target_coords) ->
-    url = GEOCODER_URL + "v1/address/?format=json&lat=#{target_coords[0]}&lon=#{target_coords[1]}"
-    $.getJSON(url, (data) ->
-        objs = data.objects
-        el = $("#nearby-addr-list")
-        el.empty()
-        for m in nearby_markers
-            map.removeLayer m
-        nearby_markers = []
-        index = 1
-        for addr in objs
-            name = addr.name
-            distance = Math.round(addr.distance)
-            coords = addr.location.coordinates
-            m = new L.Marker [coords[1], coords[0]],
-                icon: new L.NumberedDivIcon {number: index.toString()}
-            m.addTo map
-            nearby_markers.push m
-            el.append($("<li>#{addr.name} #{distance} m</li>"))
-            index++
-    )
-###
 $("#address-input").on 'change', ->
     match_obj = null
     for obj in input_addr_map
@@ -184,8 +158,6 @@ building_styler = (feat) ->
     else
         start_year = slider_min
         end_year = slider_max
-        #if year < start_year
-        #    year = start_year
         year += (end_year-1 - current_state.year)
         n = Math.floor (year - start_year) * colors.length / (end_year - start_year)
         n = colors.length - n - 1
