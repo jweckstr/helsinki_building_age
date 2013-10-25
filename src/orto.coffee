@@ -50,6 +50,11 @@ $("#address-input").typeahead(
         )
 )
 
+myIcon = L.icon(
+    iconUrl: 'images/circleicon.svg',
+    iconSize: [50, 50]
+)
+
 $("#address-input").on 'change', ->
     match_obj = null
     for obj in input_addr_map
@@ -62,6 +67,8 @@ $("#address-input").on 'change', ->
     if not marker
         marker = L.marker([coords[1], coords[0]],
             draggable: false
+            keyboard: false
+            icon: myIcon
         )
         marker.addTo(map)
     else
