@@ -141,7 +141,14 @@ slider = $("#slider").slider
     tooltip: 'hide'
     handle: 'triangle'
 
+animating = false
+int = null
+
 slider.on 'slide', (ev) ->
+    if animating
+        clearInterval int
+        $("#play-btn").html '<span class="glyphicon glyphicon-play"></span>'
+        animating = false
     update_screen ev.value
 
 select_year = (val) ->
@@ -263,8 +270,6 @@ $(".infobut").click ->
 map.addLayer osm_roads_layer
 refresh_buildings()
 
-animating = false
-int = null
 $("#play-btn").click ->
     if animating
         clearInterval int
