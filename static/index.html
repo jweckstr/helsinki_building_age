@@ -3,129 +3,149 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Helsingin rakennuskannan kehitys</title>
-        <!-- <meta name="description" content=""> -->
-        <meta name="viewport" content="width=device-width">
-        <meta property="og:image" content="http://wolski.fi/bage/images/bage.png" /> 
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Helsingin rakennuskannan kehitys</title>
+  <!-- <meta name="description" content=""> -->
+  <meta name="viewport" content="width=device-width">
+  <meta property="og:image" content="http://wolski.fi/bage/images/bage.png" /> 
 
-        <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
-        <link href="vendor/css/darkstrap.min.css" rel="stylesheet">
-        <link href="vendor/css/slider.css" rel="stylesheet">
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+  <link href="vendor/css/darkstrap.min.css" rel="stylesheet">
+  <link href="vendor/css/slider.css" rel="stylesheet">
 
-        <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script></script>
-        <!-- Leaflet map library -->
-        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
-        <script src="//cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
-        <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <!-- Leaflet map library -->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.2/leaflet.css" />
+  <script src="//cdn.leafletjs.com/leaflet-0.6.2/leaflet.js"></script>
+  <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
 
-        <style>
-            body {
-                margin: 0 0 0 0;
-            }
-            .leaflet-popup-content{
-                color: #333;
-            }
-            h3{font-weight: lighter;}
-            #zoominfo{
-                position: fixed;
-                bottom: 50%;
-                font-size: 22px;
-                color: #999;
-                width: 100%;
-                text-align: center;
-                pointer-events: none;
-            }
-            /*
-            #play-btn{background-color: #ff00b0;}
-            */
-            @font-face {
-              font-family: 'Glyphicons Halflings';
-              src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot');
-              src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
-              }
+  <style>
+  body {
+    margin: 0 0 0 0;
+  }
+  .leaflet-popup-content{
+    color: #333;
+  }
+  h3{font-weight: lighter;}
+  #zoominfo{
+    position: fixed;
+    bottom: 50%;
+    font-size: 22px;
+    color: #999;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+  }
+  #map{
+    position: fixed;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: #000;
+  }
+  .container{
+    position: fixed;
+    z-index: 10000;
+    left: 10px;
+    top: 10px; 
+    background-color: rgba(10,10,10,.97); 
+    padding:20px; 
+    padding-top: 0; 
+    width: 620px; 
+    border:1px solid;
+    border-color: #444;
+  }
+  .infobut{
+    margin-top: 15px; 
+    width: 30px;
+    float:right;
+  }
+  .infobut:hover{
+    cursor:pointer;
+  }
+  #play-btn{
+    margin-top: 5px;
+  }
+  @font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot');
+    src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+  }
+  .glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+  }
+  .glyphicon-play:before {
+    content: "\e072";
+  }
+  .glyphicon-pause:before {
+    content: "\e073";
+  }
+  .glyphicon-stop:before {
+    content: "\e074";
+  }
+  </style>
+  <script>
+  GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
+  GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
+  GEOCODER_URL = "http://dev.hel.fi/geocoder/";
+  </script>
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+  <div id="map"></div>
+  <div id="zoominfo">Zoomaa lähemmäs nähdäksesi rakennukset kartalla</div>
+  <div class="container">
+    <div class="row">
+      <div class="span7">
+        <h3 id="mainhead">Helsingin rakennuskannan kehitys 1812-2012</h3>
+      </div>
+      <div class="span1">
+        <img src="images/info.png" class="infobut">
+      </div>
+    </div>
+    <div class="infodiv hide">
+      <div class="row">
+        <div class="span4">Helsingin rakennukset sävytettynä rakentamisvuoden mukaan. Vaaleampi ja keltaisempi on uudempi. Klikkaa yksittäistä rakennusta nähdäksesi yksityiskohtaiset tiedot. Alla olevilla kentillä voit hakea rekennusta osoitteella tai kaupunginosaa sen nimellä.</div>
+        <div class="span4"><p>Rakenustiedot (2012 tilanne):<br><a href="http://www.hri.fi/fi/data/helsingin-kaupungin-rakennusrekisterin-ote-62012/">Helsingin kaupungin rakennusrekisteri</a></p>Toteutus: <script>document.write('<a href=\"mai' + 'lto:' + 'jan' + '@' + 'wolski.fi' + '\">Jan Wolski</a>');</script><br>
+          (perustuu <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> -sovellukseen)</div>
+        </div>
 
-              .glyphicon {
-                  position: relative;
-                  top: 1px;
-                  display: inline-block;
-                  font-family: 'Glyphicons Halflings';
-                  -webkit-font-smoothing: antialiased;
-                  font-style: normal;
-                  font-weight: normal;
-                  line-height: 1;
-              }
-              .glyphicon-play:before {
-                  content: "\e072";
-              }
+        <div class="row">
+          <div class="span8">
+            <hr>
+          </div>
+        </div>
 
-              .glyphicon-pause:before {
-                  content: "\e073";
-              }
+        <fieldset>
+          <input type="text" class="span4" id="address-input" placeholder="Syötä osoite...">
+          <input type="text" class="span4" id="district-input" style="margin-left:20px" placeholder="Syötä kaupunginosa...">
+        </fieldset>
+      </div>  
 
-              .glyphicon-stop:before {
-                  content: "\e074";
-              }
-        </style>
-        <script>
-            GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
-            GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
-            GEOCODER_URL = "http://dev.hel.fi/geocoder/";
-        </script>
-    </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
-        <![endif]-->
-        <div id="map" style="position: fixed; top:0px; left:0;right:0;bottom:0;background-color: #000;"></div>
-        <div id="zoominfo">Zoomaa lähemmäs nähdäksesi rakennukset kartalla</div>
-        <div class="container" style="position: fixed; left: 10px; top: 10px; background-color: rgba(10,10,10,.97); padding:20px; padding-top: 0; width: 620px; border:1px solid;border-color: #444">
-            <div class="row">
-                <div class="span7">
-                    <h3 id="mainhead">Helsingin rakennuskannan kehitys 1812-2012</h3>
-                </div>
-                <div class="span1">
-                    <img src="images/info.png" class="infobut" style="margin-top: 15px; width: 30px;float:right;cursor:pointer;">
-                </div>
-            </div>
-            <div class="infodiv hide">
-                <div class="row">
-                        <div class="span4">Helsingin rakennukset sävytettynä rakentamisvuoden mukaan. Vaaleampi ja keltaisempi on uudempi. Klikkaa yksittäistä rakennusta nähdäksesi yksityiskohtaiset tiedot. Alla olevilla kentillä voit hakea rekennusta osoitteella tai kaupunginosaa sen nimellä.</div>
-                        <div class="span4"><p>Rakenustiedot (2012 tilanne):<br><a href="http://www.hri.fi/fi/data/helsingin-kaupungin-rakennusrekisterin-ote-62012/">Helsingin kaupungin rakennusrekisteri</a></p>Toteutus: <script>document.write('<a href=\"mai' + 'lto:' + 'jan' + '@' + 'wolski.fi' + '\">Jan Wolski</a>');</script><br>
-                            (perustuu <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> -sovellukseen)</div>
-                </div>
-                
-                <div class="row">
-                    <div class="span8">
-                        <hr>
-                    </div>
-                </div>
-            
-                
-            <fieldset>
-                <input type="text" class="span4" id="address-input" placeholder="Syötä osoite...">
-                <input type="text" class="span4" id="district-input" style="margin-left:20px" placeholder="Syötä kaupunginosa...">
-            </fieldset>
-            </div>  
+      <div class="row">
+        <button id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
+        <div class="span7">
+          <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
+          <div id="slider" class="span7"></div>
+        </div>
+      </div>  
+    </div> <!-- /container -->
 
-            <div class="row">
-
-                        <button id="play-btn" class="btn btn-default btn-lg span1" style="margin-top:5px;"><span class="glyphicon glyphicon-play"></span></button>
-                        <div class="span7">
-                            <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
-                            <div id="slider" class="span7"></div>
-                        </div>
-                        
-  
-            </div>  
-        </div> <!-- /container -->
-        
-
-        <script type="text/javascript" src="js/rakennukset.js"></script>
-        <script type="text/javascript" src="js/orto.js"></script>
-    </body>
+    <script type="text/javascript" src="js/rakennukset.js"></script>
+    <script type="text/javascript" src="js/orto.js"></script>
+</body>
 </html>

@@ -152,7 +152,6 @@ update_screen = (val, force_refresh) ->
         redraw_buildings()
         $("#mainhead").html("Helsingin rakennuskannan kehitys 1812-"+val);
         
-
 slider = $("#slider").slider
     min: slider_min
     max: slider_max
@@ -163,53 +162,9 @@ slider = $("#slider").slider
 slider.on 'slide', (ev) ->
     update_screen ev.value
 
-
 select_year = (val) ->
     slider.slider 'setValue', val
     update_screen val
-
-###
-initialize_years = ->
-    years = [1812,1912,2012]
-    $year_list = $("#year_list")
-    y_width = $year_list.width() / years.length
-    for y, idx in years
-        $text_el = $("<div>#{y}</div>")
-        $text_el.css
-            "font-size": "24px"
-            "width": y_width
-            "float": "left"
-            "opacity": 1
-            "text-align": "center"
-            "cursor": "pointer"
-        $text_el.data "index", idx
-        $text_el.click ->
-            idx = $(@).data 'index'
-            select_year idx
-        $year_list.append $text_el
-
-initialize_years()
-
-$(document).keydown (ev) ->
-    val = current_state.val
-    idx = Math.floor val / N_STEPS
-    if ev.keyCode == 37 # left arrow
-        idx = idx - 1
-        if idx < 0
-            idx = 0
-    else if ev.keyCode == 39 # right arrow
-        idx = idx + 1
-        if idx == layer_count
-            idx = layer_count - 1
-    else
-        return
-
-    # if the keypress is for the map element, do not process it here.
-    target = $(ev.target)
-    if target.closest("#map").length
-        return
-    select_year idx
-###
 
 update_screen slider_max
 
