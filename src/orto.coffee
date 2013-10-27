@@ -187,13 +187,13 @@ building_styler = (feat) ->
 
 building_layer = null
 
-display_building_modal = (address, latlng) ->
+display_building_modal = (address, year, latlng) ->
     $(".modal").remove()
     modal = $("""
     <div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3>#{address}</h3>
+            <h3>#{address} (#{year})</h3>
         </div>
         <div class="modal-body" id="street-canvas" style="height: 400px">
 
@@ -237,7 +237,7 @@ refresh_buildings = ->
                         address = address.replace /(\d){5} [A-Z]+/, ""
 
                     layer.on "click", (e) ->
-                        display_building_modal address, e.latlng
+                        display_building_modal address, year, e.latlng
             building_layer.addTo map
 
 map.on 'moveend', refresh_buildings
@@ -292,7 +292,7 @@ $("#play-btn").click ->
                 enableCloseButton: false,
                 linksControl: false,
                 zoomControl: false,
-                zoom: 1
+                zoom: 0.9
             };
         var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
         myPano.setVisible(true);
