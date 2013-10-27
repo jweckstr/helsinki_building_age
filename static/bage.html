@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>Built Helsinki 1812–2012</title>
+  <!-- <meta name="description" content=""> -->
+  <meta name="viewport" content="width=device-width">
+  <meta property="og:image" content="http://dev.hel.fi/apps/rakennukset/images/bage.png" />
+  <meta property="og:title" content="Helsingin rakennuskannan kehitys 1812-2012" />
+  <meta property="og:url" content="http://dev.hel.fi/apps/rakennukset/" />
+  <meta property="og:description" content="Interaktiivinen kartta Helsingin rakennuskannan kehityksestä." />
+
+  <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
+  <link href="vendor/css/darkstrap.min.css" rel="stylesheet">
+  <link href="vendor/css/slider.css" rel="stylesheet">
+
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+  <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <!-- Leaflet map library -->
+  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+  <script src="//cdn.leafletjs.com/leaflet-0.6.3/leaflet.js"></script>
+  <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+  <style>
+  body {
+    margin: 0 0 0 0;
+  }
+  .leaflet-popup-content{
+    color: #333;
+  }
+  h3{
+    font-weight: lighter;
+    -webkit-font-smoothing: antialiased;
+  }
+  #zoominfo{
+    position: fixed;
+    z-index: -1;
+    bottom: 50%;
+    font-size: 22px;
+    color: #999;
+    width: 100%;
+    text-align: center;
+    pointer-events: none;
+  }
+  #map{
+    position: fixed;
+    z-index: -2;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: #000;
+  }
+  .container{
+    position: fixed;
+    left: 10px;
+    top: 10px; 
+    background-color: rgba(10,10,10,.97); 
+    padding:20px; 
+    padding-top: 0; 
+    width: 620px; 
+    border:1px solid;
+    border-color: #444;
+  }
+  .infobut{
+    margin-top: 15px; 
+    width: 30px;
+    float:right;
+  }
+  .infobut:hover{
+    cursor:pointer;
+  }
+  #play-btn{
+    margin-top: 5px;
+  }
+  .infodiv hr{
+    margin: 15px 0;
+  }
+  @font-face {
+    font-family: 'Glyphicons Halflings';
+    src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot');
+    src: url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.woff') format('woff'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('http://netdna.bootstrapcdn.com/twitter-bootstrap/3.0.0/fonts/glyphicons-halflings-regular.svg#glyphicons-halflingsregular') format('svg');
+  }
+  .glyphicon {
+    position: relative;
+    top: 1px;
+    display: inline-block;
+    font-family: 'Glyphicons Halflings';
+    -webkit-font-smoothing: antialiased;
+    font-style: normal;
+    font-weight: normal;
+    line-height: 1;
+  }
+  .glyphicon-play:before {
+    content: "\e072";
+  }
+  .glyphicon-pause:before {
+    content: "\e073";
+  }
+  .glyphicon-stop:before {
+    content: "\e074";
+  }
+  .leaflet-marker-icon{
+    pointer-events: none;
+  }
+  .modal{
+    top: 160px!important;
+  }
+  </style>
+  <script>
+  GEOSERVER_BASE_URL = "http://144.76.26.165/geoserver/";
+  GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
+  GEOCODER_URL = "http://dev.hel.fi/geocoder/";
+  BAGE_TEXT = {
+    "built": "Built in",
+    "mainhead": "Built Helsinki 1812–",
+    "close": "Close",
+    "street": "Show StreetView"
+  };
+  </script>
+</head>
+<body>
+<!--[if lt IE 7]>
+<p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
+<![endif]-->
+  <div id="map"></div>
+  <div id="zoominfo">Zoom in closer to see buildings</div>
+  <div class="container">
+    <div class="row">
+      <div class="span7">
+        <h3 id="mainhead">Built Helsinki 1812–2012</h3>
+      </div>
+      <div class="span1">
+        <img src="images/info.png" class="infobut">
+      </div>
+    </div>
+    <div class="infodiv hide">
+      <div class="row">
+        <div class="span4">All the buildings of Helsinki, each colored by the year it was built in. Lighter and yellower is newer. Click on a buiding to see StreetView. You can search for an address or district with the fields below.</div>
+        <div class="span4"><p>Building data (year 2012):<br><a href="http://www.hri.fi/fi/data/helsingin-kaupungin-rakennusrekisterin-ote-62012/">Helsinki city cadastre</a></p>Design &amp; dev: <script>document.write('<a href=\"mai' + 'lto:' + 'jan' + '@' + 'wolski.fi' + '\">Jan Wolski</a>');</script> (<a href="https://twitter.com/jan_wolski">@jan_wolski</a>)<br>
+          (based on <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app)</div>
+        </div>
+
+        <hr>
+        <fieldset>
+          <input type="text" class="span4" id="address-input" placeholder="Find address...">
+          <input type="text" class="span4" id="district-input" style="margin-left:20px" placeholder="Find district...">
+        </fieldset>
+      </div>  
+
+      <div class="row">
+        <button type="button" id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
+        <div class="span7">
+          <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
+          <div id="slider" class="span7"></div>
+        </div>
+      </div>  
+    </div> <!-- /container -->
+
+    <script type="text/javascript" src="js/rakennukset.js"></script>
+    <script type="text/javascript" src="js/orto.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-45171568-1', 'hel.fi');
+      ga('send', 'pageview');
+
+    </script>
+</body>
+</html>
