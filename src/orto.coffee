@@ -187,7 +187,7 @@ building_styler = (feat) ->
 
 building_layer = null
 
-display_building_modal = (address) ->
+display_building_modal = (address, latlng) ->
     $(".modal").remove()
     modal = $("""
     <div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -205,7 +205,7 @@ display_building_modal = (address) ->
     """)
     
     modal.on 'shown', ->
-        streetView address
+        streetView address, latlng
 
     $("body").append modal
     modal.modal('show')
@@ -235,20 +235,9 @@ refresh_buildings = ->
                     address = feat.properties.osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
-                    ###
-                    use = feat.properties.kayttotark_taso3
-                    if use
-                        use = use.replace /(\d)+ /, ""
-                    ###
-                    popup = $("<div></div>")
-                    popup.append $("<b>#{address}</b><br/>#{window.BAGE_TEXT.built} #{year}<br/>")
-                    button = $("<button class='btn'>#{window.BAGE_TEXT.street}</button>")
-                    button.css
-                        "margin-top": "20px"
-                    popup.append button
-                    button.click ->
-                        display_building_modal address
-                    layer.bindPopup popup[0]
+
+                    layer.on "click", (e) ->
+                        display_building_modal address, e.latlng
             building_layer.addTo map
 
 map.on 'moveend', refresh_buildings
@@ -279,25 +268,16 @@ $("#play-btn").click ->
             , 50
     animating =  not animating
 
-`function streetView(address){
-    $.getJSON(GEOCODER_URL + 'v1/address/?format=json&name=' + encodeURIComponent(address))
-    .done(function(data){
-        var coords = data.objects[0].location.coordinates;
-
-        var bryantPark = new google.maps.LatLng(coords[1], coords[0]);
-        var panoramaOptions = {
-            position: bryantPark,
-            pov: {
-                heading: 0,
-                pitch: 0
-            },
-            panControl: false,
-            enableCloseButton: false,
-            linksControl: false,
-            zoomControl: false,
-            zoom: 1
-        };
-        var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
-        myPano.setVisible(true);
-    });
+`function streetView(address, latlng){
+    var point = new google.maps.LatLng(latlng.lat, latlng.lng);
+    var panoramaOptions = {
+        position: point,
+        panControl: false,
+        enableCloseButton: false,
+        linksControl: false,
+        zoomControl: false,
+        zoom: 1
+    };
+    var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
+    myPano.setVisible(true);
 }`
