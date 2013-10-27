@@ -134,7 +134,7 @@ update_screen = (val, force_refresh) ->
     if current_state.year != val
         current_state.year = val
         redraw_buildings()
-        $("#mainhead").html("Helsingin rakennuskannan kehitys 1812-"+val);
+        $("#mainhead").html(window.BAGE_TEXT.mainhead+val);
         
 slider = $("#slider").slider
     min: slider_min
@@ -198,7 +198,7 @@ display_building_modal = (address) ->
 
         </div>
         <div class="modal-footer">
-            <button class="btn" data-dismiss="modal" aria-hidden="true">Sulje</button>
+            <button class="btn" data-dismiss="modal" aria-hidden="true">#{window.BAGE_TEXT.close}</button>
         </div>
     </div>
     """)
@@ -240,8 +240,8 @@ refresh_buildings = ->
                         use = use.replace /(\d)+ /, ""
                     ###
                     popup = $("<div></div>")
-                    popup.append $("<b>#{address}</b><br/>Valm.vuosi #{year}<br/>")
-                    button = $("<button class='btn'>Näytä katunäkymä</button>")
+                    popup.append $("<b>#{address}</b><br/>#{window.BAGE_TEXT.built} #{year}<br/>")
+                    button = $("<button class='btn'>#{window.BAGE_TEXT.street}</button>")
                     button.css
                         "margin-top": "20px"
                     popup.append button
