@@ -51,8 +51,9 @@ $("#address-input").typeahead(
 )
 
 myIcon = L.icon(
-    iconUrl: 'images/circleicon.svg',
-    iconSize: [50, 50]
+    iconUrl: 'images/flat.svg',
+    iconSize: [25, 39]
+    iconAnchor: [12, 39]
 )
 
 $("#address-input").on 'change', ->
