@@ -33,7 +33,10 @@
   .leaflet-popup-content{
     color: #333;
   }
-  h3{font-weight: lighter;}
+  h3{
+    font-weight: lighter;
+    -webkit-font-smoothing: antialiased;
+  }
   #zoominfo{
     position: fixed;
     z-index: -1;
@@ -112,7 +115,7 @@
   GEOCODER_URL = "http://dev.hel.fi/geocoder/";
   BAGE_TEXT = {
     "built": "Valm.vuosi",
-    "mainhead": "Helsingin rakennuskannan kehitys 1812-",
+    "mainhead": "Helsingin rakennuskannan kehitys 1812–",
     "close": "Sulje",
     "street": "Näytä katunäkymä"
   };
@@ -127,7 +130,7 @@
   <div class="container">
     <div class="row">
       <div class="span7">
-        <h3 id="mainhead">Helsingin rakennuskannan kehitys 1812-2012</h3>
+        <h3 id="mainhead">Helsingin rakennuskannan kehitys 1812–2012</h3>
       </div>
       <div class="span1">
         <img src="images/info.png" class="infobut">
