@@ -235,7 +235,11 @@ refresh_buildings = ->
                     address = feat.properties.osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
-
+                    layer.bindPopup "#{window.BAGE_TEXT.built} #{year}",
+                        closeOnClick: false
+                        closeButton: false
+                    layer.on "mouseover", (e) ->
+                        layer.openPopup()
                     layer.on "click", (e) ->
                         display_building_modal address, year, e.latlng
             building_layer.addTo map
