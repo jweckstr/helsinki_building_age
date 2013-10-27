@@ -280,27 +280,24 @@ $("#play-btn").click ->
     animating =  not animating
 
 `function streetView(address){
-        $.getJSON(GEOCODER_URL + 'v1/address/?format=json&name=' + encodeURIComponent(address))
-        .done(function(data){
-          var coords = data.objects[0].location.coordinates;
+    $.getJSON(GEOCODER_URL + 'v1/address/?format=json&name=' + encodeURIComponent(address))
+    .done(function(data){
+        var coords = data.objects[0].location.coordinates;
 
-          var bryantPark = new google.maps.LatLng(coords[1], coords[0]);
-          var panoramaOptions = {
+        var bryantPark = new google.maps.LatLng(coords[1], coords[0]);
+        var panoramaOptions = {
             position: bryantPark,
             pov: {
                 heading: 0,
                 pitch: 0
-              },
-              panControl: false,
-              enableCloseButton: false,
-              linksControl: false,
-              zoomControl: false,
+            },
+            panControl: false,
+            enableCloseButton: false,
+            linksControl: false,
+            zoomControl: false,
             zoom: 1
-            };
-              var myPano = new google.maps.StreetViewPanorama(
-                  document.getElementById('street-canvas'),
-                  panoramaOptions);
-              myPano.setVisible(true);
-              
-        });
+        };
+        var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
+        myPano.setVisible(true);
+    });
 }`
