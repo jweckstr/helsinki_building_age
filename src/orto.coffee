@@ -269,15 +269,37 @@ $("#play-btn").click ->
     animating =  not animating
 
 `function streetView(address, latlng){
-    var point = new google.maps.LatLng(latlng.lat, latlng.lng);
-    var panoramaOptions = {
-        position: point,
-        panControl: false,
-        enableCloseButton: false,
-        linksControl: false,
-        zoomControl: false,
-        zoom: 1
-    };
-    var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
-    myPano.setVisible(true);
+    var point = new google.maps.LatLng(latlng.lat, latlng.lng),
+        streetViewService = new google.maps.StreetViewService(),
+        streetViewMaxDistance = 100;
+    streetViewService.getPanoramaByLocation(point, streetViewMaxDistance, function(streetViewPanoramaData, status){
+
+        if(status === google.maps.StreetViewStatus.OK){
+
+            var oldPoint = point;
+            point = streetViewPanoramaData.location.latLng;
+
+            var heading = google.maps.geometry.spherical.computeHeading(point,oldPoint);            
+
+            var panoramaOptions = {
+                position: point,
+                pov: {
+                    heading: heading,
+                    zoom: 1,
+                    pitch: 0
+                },
+                panControl: false,
+                enableCloseButton: false,
+                linksControl: false,
+                zoomControl: false,
+                zoom: 1
+            };
+        var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
+        myPano.setVisible(true);
+
+        }else{
+          $("#street-canvas").html('<div style="line-height: 400px; text-align: center; font-size: 20px;-webkit-font-smoothing: antialiased;">' + window.BAGE_TEXT.streeterror + '</div>');
+        }
+    });
+    
 }`
