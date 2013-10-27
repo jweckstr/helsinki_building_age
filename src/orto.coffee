@@ -301,5 +301,4 @@ $("#play-btn").click ->
           $("#street-canvas").html('<div style="line-height: 400px; text-align: center; font-size: 20px;-webkit-font-smoothing: antialiased;">' + window.BAGE_TEXT.streeterror + '</div>');
         }
     });
-    
 }`
