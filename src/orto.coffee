@@ -1,5 +1,5 @@
 "use strict";
-if $("body").width() < 1200 and $("body").height() < 1000
+if $("body").width() < 1400 and $("body").height() < 1000
     startzoom = 15
 else
     startzoom = 16
