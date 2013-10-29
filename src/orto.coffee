@@ -183,6 +183,7 @@ building_styler = (feat) ->
         if not color
             color = colors[colors.length-1]
     ret.color = color
+    ret.fillColor = color
     return ret
 
 building_layer = null
@@ -235,16 +236,21 @@ refresh_buildings = ->
                     address = feat.properties.osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
-                    popup = new L.Popup
+                    layer.bindPopup "#{window.BAGE_TEXT.built} #{year}",
                         closeOnClick: false
                         closeButton: false
                         autoPan: false
-                    popup.setContent "#{window.BAGE_TEXT.built} #{year}"
-                    popup.setLatLng layer.getBounds().getCenter()
-                    layer.bindPopup popup
+                        offset: new L.Point(0, -20)
                     layer.on "mouseover", (e) ->
-                        console.log 
+                        layer.setStyle
+                            weight: 2,
+                            color: '#f0f'
+                        if(!L.Browser.ie && !L.Browser.opera)
+                            layer.bringToFront();
                         layer.openPopup()
+                    layer.on "mouseout", (e) ->
+                        building_layer.resetStyle(layer)
+                        layer.closePopup()
                     layer.on "click", (e) ->
                         display_building_modal address, year, e.latlng
             building_layer.addTo map

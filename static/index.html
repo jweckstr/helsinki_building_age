@@ -37,9 +37,18 @@
     font-weight: lighter;
     -webkit-font-smoothing: antialiased;
   }
+   #map{
+    position: fixed;
+    z-index: 0;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    background-color: #000;
+  }
   #zoominfo{
     position: fixed;
-    z-index: -1;
+    z-index: 1;
     bottom: 50%;
     font-size: 22px;
     color: #999;
@@ -48,17 +57,9 @@
     pointer-events: none;
     -webkit-font-smoothing: antialiased;
   }
-  #map{
-    position: fixed;
-    z-index: -2;
-    top:0;
-    left:0;
-    right:0;
-    bottom:0;
-    background-color: #000;
-  }
   .container{
     position: fixed;
+    z-index: 2;
     left: 10px;
     top: 10px; 
     background-color: rgba(10,10,10,.97); 
@@ -130,6 +131,9 @@
   }
   .leaflet-popup-content {
     color: #fff;
+  }
+  .leaflet-popup-tip-container{
+    display: none;
   }
   </style>
   <script>
