@@ -222,10 +222,10 @@ refresh_buildings = ->
         return
     $("#zoominfo").hide();
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
-    get_wfs 'hel:rakennukset',
+    get_wfs 'bage:rakennukset',
         maxFeatures: 2500
         bbox: str
-        propertyName: 'valmvuosi,osoite,wkb_geometry_s2'
+        propertyName: 'valmvuosi,Osoite,the_geom'
         , (data) ->
             if building_layer
                 map.removeLayer building_layer
@@ -233,7 +233,7 @@ refresh_buildings = ->
                 style: building_styler
                 onEachFeature: (feat, layer) ->
                     year = feat.properties.valmvuosi
-                    address = feat.properties.osoite
+                    address = feat.properties.Osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
                     layer.bindPopup "#{window.BAGE_TEXT.built} #{year}",
@@ -248,9 +248,11 @@ refresh_buildings = ->
                         if(!L.Browser.ie && !L.Browser.opera)
                             layer.bringToFront();
                         layer.openPopup()
+                        return
                     layer.on "mouseout", (e) ->
                         building_layer.resetStyle(layer)
-                        layer.closePopup()
+                        map.closePopup()
+                        return
                     layer.on "click", (e) ->
                         display_building_modal address, year, e.latlng
             building_layer.addTo map
