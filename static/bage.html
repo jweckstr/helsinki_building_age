@@ -6,11 +6,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Built Helsinki 1812–2012</title>
+  <title>Built Helsinki 1800–2012</title>
   <!-- <meta name="description" content=""> -->
   <meta name="viewport" content="width=680">
   <meta property="og:image" content="http://dev.hel.fi/apps/rakennukset/images/bage.png" />
-  <meta property="og:title" content="Built Helsinki 1812-2012" />
+  <meta property="og:title" content="Built Helsinki 1800-2012" />
   <meta property="og:url" content="http://dev.hel.fi/apps/rakennukset/bage.html" />
   <meta property="og:description" content="Animated building age map of Helsinki" />
 
@@ -137,12 +137,13 @@
   }
   </style>
   <script>
-  GEOSERVER_BASE_URL = "http://wolski.fi:8080/geoserver/";
+  GEOSERVER_BASE_URL = "http://localhost:8082/geoserver/";
   GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
   GEOCODER_URL = "http://dev.hel.fi/geocoder/";
   BAGE_TEXT = {
     "built": "Built in",
-    "mainhead": "Built Helsinki 1812–",
+    "demolished": "Demolished in",
+    "mainhead": "Built Helsinki 1800–",
     "close": "Close",
     "street": "Show StreetView",
     "streeterror": "No StreetView available"
@@ -158,7 +159,7 @@
   <div class="container">
     <div class="row">
       <div class="span7">
-        <h3 id="mainhead">Built Helsinki 1812–2012</h3>
+        <h3 id="mainhead">Built Helsinki 1800–2012</h3>
       </div>
       <div class="span1">
         <img src="images/info.png" class="infobut">
@@ -181,7 +182,7 @@
       <div class="row">
         <button type="button" id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
         <div class="span7">
-          <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
+          <div style="font-size: 14px; text-align: center;"><span style="float:left">1800</span>1912<span style="float:right">2012</span></div>
           <div id="slider" class="span7"></div>
         </div>
       </div>  

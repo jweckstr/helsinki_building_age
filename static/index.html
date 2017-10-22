@@ -10,7 +10,7 @@
   <!-- <meta name="description" content=""> -->
   <meta name="viewport" content="width=680">
   <meta property="og:image" content="http://dev.hel.fi/apps/rakennukset/images/bage.png" />
-  <meta property="og:title" content="Rakennettu Helsinki 1812-2012" />
+  <meta property="og:title" content="Rakennettu Helsinki 1800-2012" />
   <meta property="og:url" content="http://dev.hel.fi/apps/rakennukset/" />
   <meta property="og:description" content="Sovellus vie kaupunkisuunnittelusta ja pääkaupunkimme kehityksestä kiinnostuneet tutkimusmatkalle historian kerrostumiin." />
 
@@ -137,12 +137,13 @@
   }
   </style>
   <script>
-  GEOSERVER_BASE_URL = "http://wolski.fi:8080/geoserver/";
+  GEOSERVER_BASE_URL = "http://localhost:8082/geoserver/";
   GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
   GEOCODER_URL = "http://dev.hel.fi/geocoder/";
   BAGE_TEXT = {
     "built": "Valm. vuosi",
-    "mainhead": "Rakennettu Helsinki 1812–",
+    "demolished": "Purkuvuosi",
+    "mainhead": "Rakennettu Helsinki 1800–",
     "close": "Sulje",
     "street": "Näytä katunäkymä",
     "streeterror": "Katunäkymää ei saatavilla"
@@ -158,7 +159,7 @@
   <div class="container">
     <div class="row">
       <div class="span7">
-        <h3 id="mainhead">Rakennettu Helsinki 1812–2012</h3>
+        <h3 id="mainhead">Rakennettu Helsinki 1800–2012</h3>
       </div>
       <div class="span1">
         <img src="images/info.png" class="infobut">
@@ -181,7 +182,7 @@
       <div class="row">
         <button type="button" id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
         <div class="span7">
-          <div style="font-size: 14px; text-align: center;"><span style="float:left">1812</span>1912<span style="float:right">2012</span></div>
+          <div style="font-size: 14px; text-align: center;"><span style="float:left">1800</span>1912<span style="float:right">2012</span></div>
           <div id="slider" class="span7"></div>
         </div>
       </div>  

@@ -12,10 +12,11 @@ map.addControl(new L.Control.Zoom({"position":"topright"}))
 map.setView([60.171944, 24.941389], startzoom)
 map.doubleClickZoom.disable()
 #'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png'
+#'http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png'
 osm_roads_layer = L.tileLayer('http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png',
     maxZoom: 18
     )
-
+# This function imports the buildings
 get_wfs = (type, args, callback) ->
     url = GEOSERVER_BASE_URL + 'wfs/'
     params =
@@ -32,6 +33,7 @@ get_wfs = (type, args, callback) ->
 marker = null
 input_addr_map = null
 
+# returns queries for addresses
 $("#address-input").typeahead(
     source: (query, process_cb) ->
         url_query = encodeURIComponent(query)
@@ -122,7 +124,7 @@ $("#district-input").on 'change', ->
     active_district = borders
 
 slider_max = 2012
-slider_min = 1812
+slider_min = 1801
 
 current_state = {}
 
@@ -132,8 +134,8 @@ redraw_buildings = ->
     building_layer.setStyle building_styler
 
 update_screen = (val, force_refresh) ->  
-    if current_state.year != val
-        current_state.year = val
+    if current_state.year_built_first != val
+        current_state.year_built_first = val
         redraw_buildings()
         $("#mainhead").html(window.BAGE_TEXT.mainhead+val);
         
@@ -165,19 +167,34 @@ colors = ['#FFFFD9', '#EDF8B1', '#C7E9B4', '#7FCDBB', '#41B6C4', '#1D91C0', '#22
 building_styler = (feat) ->
     ret =
         weight: 1
-        opacity: 1.0
-        fillOpacity: 1.0
-    year = parseInt feat.properties.valmvuosi
-    if current_state.year and year > current_state.year
+        opacity: 1
+        fillOpacity: 1
+    year_built_first = parseInt feat.properties.rakvuosi_a
+    year_built_last = parseInt feat.properties.rakvuosi_l
+    year_removed_first = parseInt feat.properties.purvuosi_a
+    year_removed_last = parseInt feat.properties.purvuosi_l
+    opacity_built = (current_state.year_built_first-year_built_first)/(year_built_last-year_built_first)
+    opacity_demolished =  1 - (current_state.year_built_first-year_removed_first)/(year_removed_last-year_removed_first)
+    if current_state.year_built_first and year_built_first >= current_state.year_built_first
         ret.opacity = 0
         ret.fillOpacity = 0
-    if not year or year == 9999
+    if current_state.year_built_first and year_removed_last <= current_state.year_built_first
+        ret.opacity = 0
+        ret.fillOpacity = 0
+
+    if opacity_built >= 0 and opacity_built <= 1
+        ret.opacity = opacity_built
+        ret.fillOpacity = opacity_built
+    if opacity_demolished >= 0 and opacity_demolished <= 1
+        ret.opacity = opacity_demolished
+        ret.fillOpacity = opacity_demolished
+    if not year_built_first or year_built_first == 9999
         color = '#eee'
     else
         start_year = slider_min
         end_year = slider_max
-        year += (end_year-1 - current_state.year)
-        n = Math.floor (year - start_year) * colors.length / (end_year - start_year)
+        #year += (end_year-1 - current_state.year)
+        n = Math.floor (year_built_first - start_year) * colors.length / (end_year - start_year)
         n = colors.length - n - 1
         color = colors[n]
         if not color
@@ -188,13 +205,13 @@ building_styler = (feat) ->
 
 building_layer = null
 
-display_building_modal = (address, year, latlng) ->
+display_building_modal = (address, year_built_first, latlng) ->
     $(".modal").remove()
     modal = $("""
     <div class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-            <h3>#{address} (#{year})</h3>
+            <h3>#{address} (#{year_built_first})</h3>
         </div>
         <div class="modal-body" id="street-canvas" style="height: 400px">
 
@@ -222,21 +239,34 @@ refresh_buildings = ->
         return
     $("#zoominfo").hide();
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
-    get_wfs 'bage:rakennukset',
-        maxFeatures: 2500
+    get_wfs 'hfors:all_merged',
+        maxFeatures: 10000
         bbox: str
-        propertyName: 'valmvuosi,Osoite,the_geom'
+        propertyName: 'rakvuosi_a,rakvuosi_l,purvuosi_a,purvuosi_l,Osoite,the_geom'
         , (data) ->
             if building_layer
                 map.removeLayer building_layer
             building_layer = L.geoJson data,
                 style: building_styler
                 onEachFeature: (feat, layer) ->
-                    year = feat.properties.valmvuosi
+                    year_built_first = feat.properties.rakvuosi_a
+                    year_built_last = feat.properties.rakvuosi_l
+                    year_removed_first = feat.properties.purvuosi_a
+                    year_removed_last = feat.properties.purvuosi_l
+                    # creating string to display year(s) of construction and demolision
+                    if year_built_first == year_built_last
+                        built_threshold = year_built_first
+                    else
+                        built_threshold = year_built_first.toString().concat(" - ", year_built_last.toString())
+                    if year_removed_first == year_removed_last
+                        removed_threshold = year_removed_first
+                    else
+                        removed_threshold = year_removed_first.toString().concat(" - ", year_removed_last.toString())
+
                     address = feat.properties.Osoite
                     if address
                         address = address.replace /(\d){5} [A-Z]+/, ""
-                    layer.bindPopup "#{window.BAGE_TEXT.built} #{year}",
+                    layer.bindPopup "#{window.BAGE_TEXT.built} #{built_threshold}\n #{window.BAGE_TEXT.demolished} #{removed_threshold}",
                         closeOnClick: false
                         closeButton: false
                         autoPan: false
@@ -254,7 +284,7 @@ refresh_buildings = ->
                         map.closePopup()
                         return
                     layer.on "click", (e) ->
-                        display_building_modal address, year, e.latlng
+                        display_building_modal address, year_built_first, e.latlng
             building_layer.addTo map
 
 map.on 'moveend', refresh_buildings
@@ -271,10 +301,10 @@ $("#play-btn").click ->
         $(this).html '<span class="glyphicon glyphicon-play"></span>'
     else
         $(this).html '<span class="glyphicon glyphicon-pause"></span>'
-        if current_state.year is slider_max
+        if current_state.year_built_first is slider_max
             select_year slider_min
         int = setInterval () ->
-                newyear = current_state.year + 1
+                newyear = current_state.year_built_first + 1
                 if newyear <= slider_max
                     select_year newyear
                 else
