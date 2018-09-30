@@ -138,6 +138,10 @@ redraw_layers = ->
         return
     building_layer.setStyle building_styler
     building_layer.setZIndex(50)
+    if not transport_layer
+        return
+    transport_layer.setStyle transport_styler
+    transport_layer.setZIndex(55)
     if not water_layer
         return
     water_layer.setStyle water_styler
@@ -182,7 +186,7 @@ update_screen slider_max
 colors = ['#0003E5', '#005FE1', '#00B7DD', '#00D9A6', '#00D54C', '#0AD200', '#5DCE00', '#AECA00', '#C69100', '#C23F00', '#BF000E' ]
 #colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
 
-building_styler = (feat) ->
+building_styler = (feat, use_colors=false) ->
     ret =
         weight: 0.5
         opacity: 1
@@ -207,17 +211,21 @@ building_styler = (feat) ->
     if opacity_demolished >= 0 and opacity_demolished <= 1
         ret.opacity = opacity_demolished
         ret.fillOpacity = opacity_demolished
-    if not year_built_first or year_built_first == 9999
-        color = '#eee'
+
+    if use_colors
+        if not year_built_first or year_built_first == 9999
+            color = '#eee'
+        else
+            start_year = slider_min
+            end_year = slider_max
+            #year += (end_year-1 - current_state.year)
+            n = Math.floor (year_built_first - start_year) * colors.length / (end_year - start_year)
+            n = colors.length - n - 1
+            color = colors[n]
+            if not color
+                color = colors[colors.length-1]
     else
-        start_year = slider_min
-        end_year = slider_max
-        #year += (end_year-1 - current_state.year)
-        n = Math.floor (year_built_first - start_year) * colors.length / (end_year - start_year)
-        n = colors.length - n - 1
-        color = colors[n]
-        if not color
-            color = colors[colors.length-1]
+        color = '#5A5A5A'
     #ret.color = '#FFFFFF'
     #ret.opacity = 0
     ret.color = color
@@ -261,6 +269,43 @@ water_styler = (feat) ->
     ret.fillColor = '#bce4e4'   #5db2bb #a8c9ff #bce4e4
     return ret
 
+transport_styler = (feat) ->
+    ret =
+        weight: 1
+        opacity: 1
+        fillOpacity: 1
+    year_built_first = parseInt feat.properties.rak_alku || 0
+    year_built_last = parseInt feat.properties.rak_loppu || 0
+    year_removed_first = parseInt feat.properties.pur_alku || 9999
+    year_removed_last = parseInt feat.properties.pur_loppu || 9999
+    opacity_built = (current_state.year_built_first-year_built_first)/(year_built_last-year_built_first)
+    opacity_demolished =  1 - (current_state.year_built_first-year_removed_first)/(year_removed_last-year_removed_first)
+    if current_state.year_built_first and year_built_first >= current_state.year_built_first
+        ret.opacity = 0
+        ret.fillOpacity = 0
+    if current_state.year_built_first and year_removed_last <= current_state.year_built_first
+        ret.opacity = 0
+        ret.fillOpacity = 0
+
+    if opacity_built >= 0 and opacity_built <= 1
+        ret.opacity = opacity_built
+        ret.fillOpacity = opacity_built
+    if opacity_demolished >= 0 and opacity_demolished <= 1
+        ret.opacity = opacity_demolished
+        ret.fillOpacity = opacity_demolished
+    if not year_built_first or year_built_first == 9999
+        color = '#eee'
+    else
+        start_year = slider_min
+        end_year = slider_max
+        #year += (end_year-1 - current_state.year)
+        n = Math.floor (year_built_first - start_year) * colors.length / (end_year - start_year)
+        n = colors.length - n - 1
+        color = '#eee'
+    ret.color = '#5A5A5A'
+    ret.fillColor = '#bce4e4'   #5db2bb #a8c9ff #bce4e4
+    return ret
+
 land_styler = (feat) ->
     ret =
         weight: 0.5
@@ -296,23 +341,24 @@ land_styler = (feat) ->
         n = Math.floor (year_built_first - start_year) * colors.length / (end_year - start_year)
         n = colors.length - n - 1
         color = '#eee'
-"""
+    """
     ret.color = '#bce4e4'
     ret.fillColor = '#bce4e4'
     ret.fillOpacity = 0
     if tyyppi == 'pelto'
         ret.color = '#fff3d4'
-        ret.fillColor = '#fff3d4'   #5db2bb #a8c9ff #bce4e4
+        ret.fillColor = '#FAFAEC'   #5db2bb #a8c9ff #bce4e4
         ret.fillOpacity = 1
     if tyyppi == 'metsä'
         ret.color = '#d2e1ab'
-        ret.fillColor = '#d2e1ab'
+        ret.fillColor = '#F1F8DD'
         ret.fillOpacity = 1
 
 
     return ret
 
 building_layer = null
+transport_layer = null
 water_layer = null
 land_layer = null
 
@@ -400,6 +446,9 @@ refresh_buildings = ->
         if building_layer
             map.removeLayer building_layer
             building_layer = null
+        if transport_layer
+            map.removeLayer transport_layer
+            transport_layer = null
         if water_layer
             map.removeLayer water_layer
             water_layer = null
@@ -479,6 +528,25 @@ refresh_buildings = ->
                             display_building_modal display_name, year_built_first, e.latlng, search_terms
             building_layer.addTo map
             building_layer.zIndex = 50
+
+    get_wfs 'hfors:trafik',
+        maxFeatures: 10000
+        bbox: str
+        propertyName: 'rak_alku,rak_loppu,pur_alku,pur_loppu,the_geom'
+        , (data) ->
+            if transport_layer
+                map.removeLayer transport_layer
+            transport_layer = L.geoJson data,
+                style: transport_styler
+                onEachFeature: (feat, layer) ->
+                    year_built_first = feat.properties.rak_alku
+                    year_built_last = feat.properties.rak_loppu
+                    year_removed_first = feat.properties.pur_alku
+                    year_removed_last = feat.properties.pur_loppu
+                 #layer.setZIndex(99)
+            transport_layer.zIndex = 55
+            transport_layer.addTo map
+
     get_wfs 'hfors:all_water',
         maxFeatures: 10000
         bbox: str
