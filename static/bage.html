@@ -22,7 +22,7 @@
   <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
   <!-- Leaflet map library -->
-  <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.6.3/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
   <script src="vendor/js/leaflet.js"></script>
   <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
   <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
@@ -70,7 +70,7 @@
     border-color: #444;
   }
   .infobut{
-    margin-top: 15px; 
+    margin-top: 15px;
     width: 30px;
     float:right;
   }
@@ -147,9 +147,7 @@
     "building_name": "",
     "planner": "Planned by",
     "mainhead": "Built Helsinki 1800–",
-    "close": "Close",
-    "street": "Show StreetView",
-    "streeterror": "No StreetView available"
+    "close": "Close"
   };
   </script>
 </head>
@@ -167,12 +165,20 @@
       <div class="span1">
         <img src="images/info.png" class="infobut">
       </div>
+      <div class="span3">
+        Toggle building color
+        <input type="checkbox" id="toggle_building_color" value=true>
+      </div>
+      <div class="span3">
+        Toggle vector layers
+        <input type="checkbox" id="toggle_vector_layers" value=true>
+      </div>
     </div>
     <div class="infodiv hide">
       <div class="row">
-        <div class="span4">All the buildings of Helsinki, each colored by the year it was built in. Lighter and yellower is newer. Click on a buiding to see StreetView. You can search for an address or district with the fields below.</div>
-        <div class="span4"><p>Building data (year 2012):<br><a href="http://www.hri.fi/fi/data/helsingin-kaupungin-rakennusrekisterin-ote-62012/">Helsinki city cadastre</a></p>Design &amp; dev: <script>document.write('<a href=\"mai' + 'lto:' + 'jan' + '@' + 'wolski.fi' + '\">Jan Wolski</a>');</script> (<a href="https://twitter.com/jan_wolski">@jan_wolski</a>)<br>
-          (based on <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app)</div>
+        <div class="span4">All the buildings of Helsinki, each colored by the year it was built in. Click on a buiding to see pictures retrieved from <a href="www.finna.fi">Finna</a>. You can search for an address or district with the fields below.</div>
+        <div class="span4"><p> Existing buildings based on Helsinki building registry. Old buildings digitized from old aerial images, maps and building permits.<br>
+          (Based on Helsinki building age viewer by Jan Wolski (<a href="https://twitter.com/jan_wolski">@jan_wolski</a>) and <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app)</div>
         </div>
 
         <hr>

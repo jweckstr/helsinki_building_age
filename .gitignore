@@ -1,3 +1,9 @@
 *~
 static/js
 node_modules
+static/vendor/js/*
+src/bage.js
+src/bage.js.map
+.idea/*
+static/test*
+Python/raster_work_flow.py

@@ -6,6 +6,9 @@ http://localhost:8082/geoserver/
 admin
 geoserver
 
+cd d/PycharmProjects/helsinki-bage/
+grunt server
+
 
 
 Enable cors to get stuff working
@@ -15,7 +18,7 @@ import geopandas as gpd
 import os
 import numpy
 
-data_folder = "D:\YIMBY\GISprojekt\Helsingfors byggnader genom tiderna"
+data_folder = "E:\YIMBY\GISprojekt\Helsingfors byggnader genom tiderna"
 geoserver_folder = "D:\Program Files (x86)\GeoServer 2.13.0\data_dir\data\hfors"
 # "rakrek_1700_dump.shp",
 fnames = ["rakrek_1700_dump.shp", "rakrek_1800_dump.shp", "rakrek_1878_kanta.shp", "rakrek_dump.shp",
@@ -144,7 +147,7 @@ def get_purvuosi_for_overlapping_building(older_df, master_df):
 
     return older_df[columns], master_df[columns]
 
-if True:
+if False:
     master_df = None
     for fname, alku_default, loppu_default, purvuos_default in reversed(zip(fnames, rakvuos_alku_defaults, rakvuos_loppu_default, purvuos_loppu_default)):
         print(fname)

@@ -4,12 +4,20 @@ if $("body").width() < 1400 and $("body").height() < 1000
 else
     startzoom = 15 #13.5
 bounds = new L.LatLngBounds [60.114,24.750], [60.32, 25.300]
+
+vector_layers = L.layerGroup()
+
+sp_layer = L.tileLayer.wms('http://localhost:8082/geoserver/ows?',
+  layers: 'hfors:geotiff_coverage_2'
+)
+
 map = L.map 'map',
     minZoom: 11
     maxBounds: bounds
     zoomControl: false
     zoomSnap: 0
     zoomDelta: 0.01
+    layers: [vector_layers, sp_layer]
 
 
 map.addControl(new L.Control.Zoom({"position":"topright"}))
@@ -18,9 +26,7 @@ map.doubleClickZoom.disable()
 #map.zoomSnap = 0
 #map.zoomDelta = 0.01
 
-#'http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png'
-#'http://a.tiles.mapbox.com/v3/aspirin.map-p0umewov/{z}/{x}/{y}.png'
-#osm_roads_layer = L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/60640/256/{z}/{x}/{y}.png', maxZoom: 18 )
+
 # This function imports the buildings
 get_wfs = (type, args, callback) ->
     url = GEOSERVER_BASE_URL + 'wfs/'
@@ -37,6 +43,12 @@ get_wfs = (type, args, callback) ->
 
 marker = null
 input_addr_map = null
+
+myIcon = L.icon(
+    iconUrl: 'images/flat.svg',
+    iconSize: [25, 39]
+    iconAnchor: [12, 39]
+)
 
 # returns queries for addresses
 $("#address-input").typeahead(
@@ -55,12 +67,6 @@ $("#address-input").typeahead(
             input_addr_map = objs
             process_cb(ret)
         )
-)
-
-myIcon = L.icon(
-    iconUrl: 'images/flat.svg',
-    iconSize: [25, 39]
-    iconAnchor: [12, 39]
 )
 
 $("#address-input").on 'change', ->
@@ -128,6 +134,33 @@ $("#district-input").on 'change', ->
     map.fitBounds borders.getBounds()
     active_district = borders
 
+# Display if already checked
+if $("#toggle_building_color:checked")
+  use_colors = true
+
+# Toggle on change
+$("#toggle_building_color").change ->
+  if use_colors
+    use_colors = false
+  else
+    use_colors = true
+  redraw_layers()
+
+  # Display if already checked
+if $("#toggle_vector_layers:checked")
+  vector_layers_active = true
+  #refresh_buildings()
+
+# Toggle on change
+$("#toggle_vector_layers").change ->
+  if vector_layers_active
+    vector_layers_active = false
+    purge_vector_layer()
+  else
+    vector_layers_active = true
+    refresh_buildings()
+    vector_layers.addTo(map)
+
 slider_max = 2030
 slider_min = 1800
 
@@ -150,11 +183,11 @@ redraw_layers = ->
         return
     land_layer.setStyle land_styler
 
-update_screen = (val, force_refresh) ->  
-    if current_state.year_built_first != val
-        current_state.year_built_first = val
-        redraw_layers()
-        $("#mainhead").html(window.BAGE_TEXT.mainhead+val);
+update_screen = (val, force_refresh) ->
+  if current_state.year_built_first != val
+      current_state.year_built_first = val
+      redraw_layers()
+      $("#mainhead").html(window.BAGE_TEXT.mainhead+val);
 
 
 slider = $("#slider").slider
@@ -186,7 +219,7 @@ update_screen slider_max
 colors = ['#0003E5', '#005FE1', '#00B7DD', '#00D9A6', '#00D54C', '#0AD200', '#5DCE00', '#AECA00', '#C69100', '#C23F00', '#BF000E' ]
 #colors = ['#a50026','#d73027','#f46d43','#fdae61','#fee090','#ffffbf','#e0f3f8','#abd9e9','#74add1','#4575b4','#313695']
 
-building_styler = (feat, use_colors=false) ->
+building_styler = (feat) ->
     ret =
         weight: 0.5
         opacity: 1
@@ -348,11 +381,11 @@ land_styler = (feat) ->
     if tyyppi == 'pelto'
         ret.color = '#fff3d4'
         ret.fillColor = '#FAFAEC'   #5db2bb #a8c9ff #bce4e4
-        ret.fillOpacity = 1
+        ret.fillOpacity = 0
     if tyyppi == 'metsä'
         ret.color = '#d2e1ab'
         ret.fillColor = '#F1F8DD'
-        ret.fillOpacity = 1
+        ret.fillOpacity = 0
 
 
     return ret
@@ -376,10 +409,6 @@ display_building_modal = (address, year_built_first, latlng, search_string) ->
 
         <div class="modal-body" id="finna_images">
 
-        </div>
-        <div class="modal-body" id="street-canvas" style="height: 400px">
-
-        </div>
         <div class="modal-footer">
             <button class="btn" data-dismiss="modal" aria-hidden="true">#{window.BAGE_TEXT.close}</button>
         </div>
@@ -440,25 +469,31 @@ get_finna2 = (address, max_imgs, hash_code="#finna_images", aika_alku='0', aika_
             img_html = img_html + "<img src=#{img_url} style='height: 100px'>"
           return $(hash_code).html '<div>' + img_html + '</div>'
 
+purge_vector_layer = ->
+  if vector_layers
+    map.removeLayer vector_layers
+    vector_layers = L.layerGroup()
+  if building_layer
+      map.removeLayer building_layer
+      building_layer = null
+  if transport_layer
+      map.removeLayer transport_layer
+      transport_layer = null
+  if water_layer
+      map.removeLayer water_layer
+      water_layer = null
+  if land_layer
+      map.removeLayer land_layer
+      land_layer = null
 
 refresh_buildings = ->
     if map.getZoom() < 11
-        if building_layer
-            map.removeLayer building_layer
-            building_layer = null
-        if transport_layer
-            map.removeLayer transport_layer
-            transport_layer = null
-        if water_layer
-            map.removeLayer water_layer
-            water_layer = null
-        if land_layer
-            map.removeLayer land_layer
-            land_layer = null
+        purge_vector_layer()
         $("#zoominfo").show(); 
         return
     $("#zoominfo").hide();
     str = map.getBounds().toBBoxString() + ',EPSG:4326'
+
     get_wfs 'hfors:all_merged',
         maxFeatures: 50000
         bbox: str
@@ -526,7 +561,7 @@ refresh_buildings = ->
                             return
                         layer.on "click", (e) ->
                             display_building_modal display_name, year_built_first, e.latlng, search_terms
-            building_layer.addTo map
+            building_layer.addTo vector_layers
             building_layer.zIndex = 50
 
     get_wfs 'hfors:trafik',
@@ -545,7 +580,7 @@ refresh_buildings = ->
                     year_removed_last = feat.properties.pur_loppu
                  #layer.setZIndex(99)
             transport_layer.zIndex = 55
-            transport_layer.addTo map
+            transport_layer.addTo vector_layers
 
     get_wfs 'hfors:all_water',
         maxFeatures: 10000
@@ -563,7 +598,7 @@ refresh_buildings = ->
                     year_removed_last = feat.properties.maa_loppu
                  #layer.setZIndex(99)
             water_layer.zIndex = 90
-            water_layer.addTo map
+            water_layer.addTo vector_layers
 
     get_wfs 'hfors:land',
         maxFeatures: 10000
@@ -581,14 +616,19 @@ refresh_buildings = ->
                     #year_removed_first = feat.properties.maa_alku
                     #year_removed_last = feat.properties.maa_loppu
             land_layer.zIndex = 90
-            land_layer.addTo map
+            land_layer.addTo vector_layers
 
 map.on 'moveend', refresh_buildings
 
 $(".infobut").click ->
     $(".infodiv").slideToggle()
 
-#map.addLayer osm_roads_layer
+
+overlayMaps = "Smith Polvinen": sp_layer
+baseMaps = "" #"City": vector_layers
+
+L.control.layers(baseMaps, overlayMaps).addTo(map)
+
 refresh_buildings()
 
 $("#play-btn").click ->
@@ -611,40 +651,4 @@ $("#play-btn").click ->
             , 500 # this is the delay between years
     animating =  not animating
 
-
-`function streetView(address, latlng){
-    var point = new google.maps.LatLng(latlng.lat, latlng.lng),
-        streetViewService = new google.maps.StreetViewService(),
-        streetViewMaxDistance = 100;
-
-    streetViewService.getPanoramaByLocation(point, streetViewMaxDistance, function(streetViewPanoramaData, status){
-
-        if(status === google.maps.StreetViewStatus.OK){
-
-            var oldPoint = point;
-            point = streetViewPanoramaData.location.latLng;
-
-            var heading = google.maps.geometry.spherical.computeHeading(point,oldPoint);            
-
-            var panoramaOptions = {
-                position: point,
-                pov: {
-                    heading: heading,
-                    zoom: 1,
-                    pitch: 0
-                },
-                panControl: false,
-                enableCloseButton: false,
-                linksControl: false,
-                zoomControl: false,
-                zoom: 0.9
-            };
-        var myPano = new google.maps.StreetViewPanorama(document.getElementById('street-canvas'), panoramaOptions);
-        myPano.setVisible(true);
-
-        }else{
-          $("#street-canvas").html('<div style="line-height: 400px; text-align: center; font-size: 20px;-webkit-font-smoothing: antialiased;">' + window.BAGE_TEXT.streeterror + '</div>');
-        }
-    });
-}`
 
