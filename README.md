@@ -1,9 +1,10 @@
-Helsinki building age animated map
+Helsinki animated map
 ======================================
 
-An interactive map visualizing building age in Helsinki. See the city developing from 1812 to 2012.
+An interactive map visualizing the development of Helsinki. See the city developing from 1800 into to near future.
 
-Based on "helsinki-orto" by Juha Yrjölä. Uses geolocation services from original application and WFS from author's server.
+Based on "helsinki-orto" by Juha Yrjölä and Helsinki building age by Jan Wolski.
+Uses geolocation services from original application and WFS from author's server.
 
 Installation
 ------------
