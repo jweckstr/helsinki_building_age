@@ -9,25 +9,27 @@ geoserver
 cd d/PycharmProjects/helsinki-bage/
 grunt server
 
-
+"http://kaupunkiatlas.fi/geoserver/"
 
 Enable cors to get stuff working
 """
+
+
 import pandas as pd
 import geopandas as gpd
 import os
 import numpy
+from shapely.geometry import Polygon
 
 data_folder = "E:\YIMBY\GISprojekt\Helsingfors byggnader genom tiderna"
 geoserver_folder = "D:\Program Files (x86)\GeoServer 2.13.0\data_dir\data\hfors"
-# "rakrek_1700_dump.shp",
-fnames = ["rakrek_1700_dump.shp", "rakrek_1800_dump.shp", "rakrek_1878_kanta.shp", "rakrek_dump.shp",
+fnames = ["rakrek_1700_dump.shp", "rakrek_1750_dump.shp", "rakrek_1800_dump.shp", "rakrek_1878_kanta.shp", "rakrek_dump.shp",
           "rakrek_1932.shp", "rakrek_1943_kanta.shp", "rakrek_1950_kanta.shp", "rakrek_1964_kanta.shp", "rakrek_1969_kanta.shp",
           "rakrek_1976_kanta.shp", "rakrek_1988_kanta.shp", "rakrek_2012_kanta.shp", "rakrek_2017_kanta.shp"]
 
-rakvuos_alku_defaults = [1721, 1750, 1800, 1800, 1800, 1933, 1944, 1951, 1965, 1970, 1977, 1989, 2013]
-rakvuos_loppu_default = [1850, 1932, 1932, 1932, 1932, 1943, 1950, 1964, 1969, 1976, 1988, 2012, 2017]
-purvuos_loppu_default = [1850, 1932, 1932, 1932, None, None, None, None, None, None, None, None, None]
+rakvuos_alku_defaults = [1713, 1725, 1750, 1800, 1800, 1800, 1933, 1944, 1951, 1965, 1970, 1977, 1989, 2013]
+rakvuos_loppu_default = [1725, 1850, 1932, 1932, 1932, 1932, 1943, 1950, 1964, 1969, 1976, 1988, 2012, 2017]
+purvuos_loppu_default = [1800, 1850, 1932, 1932, 1932, None, None, None, None, None, None, None, None, None]
 
 
 def rakvuos(rakvuosis, rakvuoskoms, rakvuos_alku_default, rakvuos_loppu_default, alku=True):
@@ -38,7 +40,7 @@ def rakvuos(rakvuosis, rakvuoskoms, rakvuos_alku_default, rakvuos_loppu_default,
 
             rakvuosi_alku.append(rakvuosi)
             rakvuosi_loppu.append(rakvuosi)
-        elif isinstance(rakvuoskom, unicode) and len(rakvuoskom) >= 5:
+        elif rakvuoskom is not None and len(rakvuoskom) >= 5:  # isinstance(rakvuoskom, unicode) and
                 if rakvuoskom[0] == '<':
                     rakvuosi_alku.append(rakvuos_alku_default)
                     rakvuosi_loppu.append(rakvuoskom[1:5])
@@ -68,11 +70,10 @@ def purvuos(purvuosis, purvuoskoms, purvuos_alku_defaults, purvuos_loppu_default
     purvuosi_alku = []
     purvuosi_loppu = []
     for purvuosi, purvuoskom, purvuos_alku_default in zip(purvuosis, purvuoskoms, purvuos_alku_defaults):
-        if not numpy.isnan(purvuosi) and not purvuosi == 9999:
-
+        if purvuosi is not None and not numpy.isnan(purvuosi) and not purvuosi == 9999:
             purvuosi_alku.append(purvuosi)
             purvuosi_loppu.append(purvuosi)
-        elif isinstance(purvuoskom, unicode) and len(purvuoskom) >= 5:
+        elif purvuoskom is not None and len(purvuoskom) >= 5:   # isinstance(purvuoskom, unicode) and
                 if purvuoskom[0] == '<':
                     purvuosi_alku.append(purvuos_alku_default)
                     purvuosi_loppu.append(purvuoskom[1:5])
@@ -84,7 +85,10 @@ def purvuos(purvuosis, purvuoskoms, purvuos_alku_defaults, purvuos_loppu_default
                     if 'l' in purvuoskom[5:9]:
                         purvuosi_loppu.append(purvuoskom[0:3]+'9')
                     else:
-                        purvuosi_loppu.append(purvuoskom[5:9])
+                        try:
+                            purvuosi_loppu.append(float(purvuoskom[5:9]))
+                        except:
+                            purvuosi_loppu.append(2017)
                 else:
                     purvuosi_alku.append(numpy.nan)
                     purvuosi_loppu.append(numpy.nan)
@@ -94,7 +98,16 @@ def purvuos(purvuosis, purvuoskoms, purvuos_alku_defaults, purvuos_loppu_default
     if alku:
         return [float(x) for x in purvuosi_alku]
     else:
-        return [float(x) for x in purvuosi_loppu]
+        try:
+            # print([float(x) for x in purvuosi_loppu])
+            return [float(x) for x in purvuosi_loppu]
+        except:
+            for x in purvuosi_loppu:
+                try:
+                    float(x)
+                except:
+                    print("|" + x + "|")
+                    exit()
 
 
 def prepare_intersections(intersections):
@@ -104,7 +117,10 @@ def prepare_intersections(intersections):
     intersections = intersections.assign(purvuosi_alku_right=lambda x: x.rakvuosi_alku_right-2)
     intersections = intersections.assign(purvuosi_loppu_right=lambda x: x.rakvuosi_loppu_right-2)
 
-    intersections['purvuosi_alku_right'] = intersections[['purvuosi_alku_right', 'rakvuosi_loppu_older']].max(axis=1)
+    intersections['purvuosi_alku_right'] = intersections.apply(lambda row: row.purvuosi_alku_right
+    if row.rakvuoskom_older is None
+    else max(row.purvuosi_alku_right, row.rakvuosi_loppu_older), axis=1)
+    #[['purvuosi_alku_right', 'rakvuosi_loppu_older']].loc[~intersections['rakvuoskom_older'].isnull()].max(axis=1)
     #print(intersections.loc[intersections['rakvuoskom_right'] == "<1912"])
 
     intersections = intersections[['index1', 'purvuosi_alku_right', 'purvuosi_loppu_right', 'rakvuoskom_right']]
@@ -125,7 +141,23 @@ def get_purvuosi_for_overlapping_building(older_df, master_df):
     older_df_shrinked = older_df.copy()
     older_df_shrinked.geometry = older_df.geometry.scale(xfact=0.98, yfact=0.98, zfact=1.0)
     master_df['index1'] = master_df.index
-    intersections = gpd.sjoin(older_df_shrinked, master_df, how="inner", op='intersects', lsuffix="older", rsuffix="right")
+    older_df_shrinked = older_df_shrinked.loc[older_df_shrinked.is_valid]
+    master_df = master_df.loc[master_df.is_valid]
+    print("joining")
+    intersections = gpd.sjoin(older_df_shrinked, master_df, how="inner", op='intersects', lsuffix="older",
+                              rsuffix="right")
+    """
+    try:
+        intersections = gpd.sjoin(older_df_shrinked, master_df, how="inner", op='intersects', lsuffix="older", rsuffix="right")
+    except:
+        for i in older_df_shrinked.geometry:
+            if not isinstance(i, Polygon):
+                print(i)
+        for i in master_df.geometry:
+            if not isinstance(i, Polygon):
+                print(i)
+        exit()
+    """
     intersections_min, intersections_max = prepare_intersections(intersections)
 
     older_df = older_df.join(intersections_min, how="left")
@@ -147,10 +179,14 @@ def get_purvuosi_for_overlapping_building(older_df, master_df):
 
     return older_df[columns], master_df[columns]
 
-if False:
+
+if True:
     master_df = None
-    for fname, alku_default, loppu_default, purvuos_default in reversed(zip(fnames, rakvuos_alku_defaults, rakvuos_loppu_default, purvuos_loppu_default)):
-        print(fname)
+    for fname, alku_default, loppu_default, purvuos_default in zip(reversed(fnames),
+                                                                   reversed(rakvuos_alku_defaults),
+                                                                   reversed(rakvuos_loppu_default),
+                                                                   reversed(purvuos_loppu_default)):
+        print("importing", fname)
         df = gpd.read_file(os.path.join(data_folder, fname))
 
         df.crs = {'init': 'epsg:3879'}
@@ -166,24 +202,34 @@ if False:
         df = df.assign(purvuosi_alku=lambda x: purvuos(x.purvuosi, x.purvuoskom, x.rakvuosi_loppu, purvuos_default, alku=True))
         df = df.assign(purvuosi_loppu=lambda x: purvuos(x.purvuosi, x.purvuoskom, x.rakvuosi_loppu, purvuos_default, alku=False))
         df[['purvuosi_alku', 'purvuosi_loppu']] = df[['purvuosi_alku', 'purvuosi_loppu']].apply(pd.to_numeric)
-        #print(df.loc[df['lisatiedot'] == "__tama__"])
-        #print(master_df.loc[master_df['lisatiedot'] == "__tama__"])
-
 
         if master_df is not None:
-
             df, master_df = get_purvuosi_for_overlapping_building(df, master_df)
-            if fname in ["rakrek_1700_dump.shp", "rakrek_1800_dump.shp", "rakrek_1878_kanta.shp", "rakrek_dump.shp"]:
+            """
+            with pd.option_context('display.max_rows', 1000, 'display.max_columns', 1000):
+                print(df.loc[df['lisatiedot'] == "__tama__"])
+                print(master_df.loc[master_df['lisatiedot'] == "__tama__"])
+            """
+
+            if fname in ["rakrek_1700_dump.shp", "rakrek_1750_dump.shp", "rakrek_1800_dump.shp", "rakrek_1878_kanta.shp", "rakrek_dump.shp"]:
                 df.loc[df['purvuosi_alku'].isnull(), 'purvuosi_alku'] = df['rakvuosi_loppu']
                 df.loc[df['purvuosi_loppu'].isnull(), 'purvuosi_loppu'] = loppu_default
-                df.loc[df['purvuosi_loppu'] > loppu_default, 'purvuosi_alku'] = df['rakvuosi_loppu']
-                df.loc[df['purvuosi_loppu'] > loppu_default, 'purvuosi_loppu'] = loppu_default
+                df.loc[df['purvuosi_alku'] > purvuos_default, 'purvuosi_alku'] = df['rakvuosi_loppu']
+                df.loc[df['purvuosi_loppu'] > purvuos_default, 'purvuosi_loppu'] = purvuos_default
+
+
             master_df = master_df.append(df)
 
         else:
             master_df = df
         master_df.reset_index(drop=True, inplace=True)
     master_df.loc[master_df['purvuosi_alku'] < master_df['rakvuosi_loppu'], 'rakvuosi_loppu'] = master_df['purvuosi_alku']
+    """
+    with pd.option_context('display.max_rows', 1000, 'display.max_columns', 1000):
+        print("gello")
+        print(master_df.loc[master_df['lisatiedot'] == "__tama__"])
+        print(master_df.loc[master_df['purvuosi_alku'] < master_df['rakvuosi_loppu']])
+        """
 
     master_df.loc[master_df['lisatiedot'].isnull(), 'lisatiedot'] = ''
     master_df['lisatiedot'] = master_df['lisatiedot'].apply(lambda x: x if '__k__:' in x else x+'__k__:')
@@ -195,9 +241,24 @@ if False:
     master_df.to_file(driver='ESRI Shapefile', filename=os.path.join(geoserver_folder, "all_merged.shp"))
     master_df.to_file(driver='ESRI Shapefile', filename=os.path.join(data_folder, "all_merged.shp"))
 
-for fname, folder in zip(["vesi_all_wgs.shp", "liikenne_kaikki.shp", "land.shp"],
+for fname, folder in zip(["vesi_all_wgs.shp", ["liikenne_kaikki.shp", "raitiotiet_kaikki.shp", "metro_kaikki.shp"], "land.shp"],
                          [os.path.join(data_folder, "vesi"), data_folder, os.path.join(data_folder, "vesi")]):
-    df = gpd.read_file(os.path.join(folder, fname))
+    print(fname)
+    if isinstance(fname, list):
+        df = gpd.GeoDataFrame()
+        for i in fname:
+            temp_df = gpd.read_file(os.path.join(folder, i))
+            if i == "liikenne_kaikki.shp":
+                temp_df["kategoria"] = 0
+            elif i == "raitiotiet_kaikki.shp":
+                temp_df["kategoria"] = 1
+            elif i == "metro_kaikki.shp":
+                temp_df["kategoria"] = 2
+            df = df.append(temp_df)
+        fname = fname[0]
+
+    else:
+        df = gpd.read_file(os.path.join(folder, fname))
     df.crs = {'init': 'epsg:4326'}
     df = df.dropna(subset=['geometry'])
 

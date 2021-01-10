@@ -6,11 +6,11 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Rakennettu Helsinki 1721–2030</title>
+  <title>Built Helsinki 1721–2030</title>
   <!-- <meta name="description" content=""> -->
   <meta name="viewport" content="width=680">
   <meta property="og:image" content="http://kaupunkiatlas.fi/img/bage.png" />
-  <meta property="og:title" content="Rakennettu Helsinki 1721–2030" />
+  <meta property="og:title" content="Built Helsinki 1721-2030" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="http://kaupunkiatlas.fi/bage.html" />
   <meta property="og:description" content="Animated building age map of Helsinki" />
@@ -61,11 +61,11 @@
     position: fixed;
     z-index: 2;
     left: 10px;
-    top: 10px;
-    background-color: rgba(10,10,10,.97);
-    padding:20px;
-    padding-top: 0;
-    width: 620px;
+    top: 10px; 
+    background-color: rgba(10,10,10,.97); 
+    padding:20px; 
+    padding-top: 0; 
+    width: 620px; 
     border:1px solid;
     border-color: #444;
   }
@@ -137,19 +137,17 @@
   }
   </style>
   <script>
-  GEOSERVER_BASE_URL = "http://kaupunkiatlas.fi/geoserver/";
+  GEOSERVER_BASE_URL = "http://localhost:8082/geoserver/";
   GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
   GEOCODER_URL = "http://dev.hel.fi/geocoder/";
   FINNA_URL = "https://api.finna.fi/api/";
   BAGE_TEXT = {
-    "built": "Valm. vuosi",
-    "demolished": "Purkuvuosi",
+    "built": "Built in",
+    "demolished": "Demolished in",
     "building_name": "",
-    "planner": "Suunnittelija",
-    "mainhead": "Rakennettu Helsinki 1721–",
-    "close": "Sulje",
-    "street": "Näytä katunäkymä",
-    "streeterror": "Katunäkymää ei saatavilla"
+    "planner": "Planned by",
+    "mainhead": "Built Helsinki 1721–",
+    "close": "Close"
   };
   </script>
 </head>
@@ -158,11 +156,11 @@
 <p class="chromeframe">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">activate Google Chrome Frame</a> to improve your experience.</p>
 <![endif]-->
   <div id="map"></div>
-  <div id="zoominfo">Klikkaa lähemmäksi nähdäksesi rakennukset</div>
+  <div id="zoominfo">Zoom in closer to see buildings</div>
   <div class="container">
     <div class="row">
       <div class="span7">
-        <h3 id="mainhead">Rakennettu Helsinki 1721–2030</h3>
+        <h3 id="mainhead">Built Helsinki 1721–2030</h3>
       </div>
       <div class="span1">
         <img src="img/info.png" class="infobut">
@@ -178,11 +176,10 @@
     </div>
     <div class="infodiv hide">
       <div class="row">
-        <div class="span4">Helsingin rakennukset sävytettynä rakentamisvuoden mukaan. Klikkaamalla rakennuksia näkee Finnassa olevia kuvia <a href="www.finna.fi">Finna</a>. Alla olevilla kentillä voit hakea rakennusta osoitteella tai kaupunginosaa sen nimellä.</div>
-        <div class="span4"><p> Olemassa olevat rakennukset perustuvat Helsingin rakennusrekisteriin Vanhat rakennukset on digitoitu vanhojen ilmakuvien, karttojen ja rakennuslupien avulla.<br>
-          Ruotsin vallan aikainen rakennuskanta perustuu pitkälti arvailuihin sillä lähdemateriaalia on niukalti.
-          Digitointi: Christoffer Weckström (<a href="https://twitter.com/ChristofferWec1">@ChristofferWec1</a>)
-          Perustuu Jan Wolskin rakennusikäsovellukseen ja <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> sovellukseen.</div>
+        <div class="span4">All the buildings of Helsinki, each colored by the year it was built in. Click on a buiding to see pictures retrieved from <a href="www.finna.fi">Finna</a>. You can search for an address or district with the fields below.</div>
+        <div class="span4"><p> Existing buildings based on Helsinki building registry. Demolished buildings digitized from old aerial images, maps and building permits.<br>
+          Buildings from the Swedish era are mostly speculative as records are scarce. Digitization work made by Christoffer Weckström.
+          App based on Helsinki building age viewer by Jan Wolski and <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app.</div>
         </div>
 
         <hr>
@@ -190,7 +187,7 @@
           <input type="text" class="span4" id="address-input" placeholder="Find address...">
           <input type="text" class="span4" id="district-input" style="margin-left:20px" placeholder="Find district...">
         </fieldset>
-      </div>
+      </div>  
 
       <div class="row">
         <button type="button" id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
@@ -198,7 +195,7 @@
           <div style="font-size: 14px; text-align: center;"><span style="float:left">1721</span>1875<span style="float:right">2030</span></div>
           <div id="slider" class="span7"></div>
         </div>
-      </div>
+      </div>  
     </div> <!-- /container -->
 
     <script type="text/javascript" src="js/bage.js"></script>

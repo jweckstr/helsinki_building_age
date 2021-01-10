@@ -9,7 +9,7 @@ Uses geolocation services from original application and WFS from author's server
 Installation
 ------------
 
-    git clone https://github.com/salicylic/helsinki-bage.git
+    git clone https://github.com/jweckstr/helsinki_building_age.git
     cd helsinki-bage/
     npm install
     grunt server

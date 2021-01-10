@@ -6,12 +6,13 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-  <title>Built Helsinki 1800–2030</title>
+  <title>Built Helsinki 1721–2030</title>
   <!-- <meta name="description" content=""> -->
   <meta name="viewport" content="width=680">
-  <meta property="og:image" content="http://dev.hel.fi/apps/rakennukset/images/bage.png" />
-  <meta property="og:title" content="Built Helsinki 1800-2030" />
-  <meta property="og:url" content="http://dev.hel.fi/apps/rakennukset/bage.html" />
+  <meta property="og:image" content="http://kaupunkiatlas.fi/img/bage.png" />
+  <meta property="og:title" content="Built Helsinki 1721-2030" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="http://kaupunkiatlas.fi/bage.html" />
   <meta property="og:description" content="Animated building age map of Helsinki" />
 
   <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap.no-responsive.no-icons.min.css" rel="stylesheet">
@@ -24,8 +25,8 @@
   <!-- Leaflet map library -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
   <script src="vendor/js/leaflet.js"></script>
+  <script type="text/javascript" src="js/localhost_constants.js"></script>
   <script type="text/javascript" src="vendor/js/bootstrap-slider.js"></script>
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
   <style>
   body {
     margin: 0 0 0 0;
@@ -44,7 +45,7 @@
     left:0;
     right:0;
     bottom:0;
-    background-color: #fffafa;
+    background-color: #d1d1d1;
   }
   #zoominfo{
     position: fixed;
@@ -137,7 +138,12 @@
   }
   </style>
   <script>
-  GEOSERVER_BASE_URL = "http://localhost:8082/geoserver/";
+    try {
+    GEOSERVER_BASE_URL = constants.geoserver_base_url;
+    }
+    catch (e) {
+      GEOSERVER_BASE_URL = "http://kaupunkiatlas.fi/geoserver/";
+    }
   GWC_BASE_URL = GEOSERVER_BASE_URL + "gwc/service/";
   GEOCODER_URL = "http://dev.hel.fi/geocoder/";
   FINNA_URL = "https://api.finna.fi/api/";
@@ -146,7 +152,7 @@
     "demolished": "Demolished in",
     "building_name": "",
     "planner": "Planned by",
-    "mainhead": "Built Helsinki 1800–",
+    "mainhead": "Built Helsinki 1721–",
     "close": "Close"
   };
   </script>
@@ -160,10 +166,10 @@
   <div class="container">
     <div class="row">
       <div class="span7">
-        <h3 id="mainhead">Built Helsinki 1800–2030</h3>
+        <h3 id="mainhead">Built Helsinki 1721–2030</h3>
       </div>
       <div class="span1">
-        <img src="images/info.png" class="infobut">
+        <img src="img/info.png" class="infobut">
       </div>
       <div class="span3">
         Toggle building color
@@ -177,8 +183,9 @@
     <div class="infodiv hide">
       <div class="row">
         <div class="span4">All the buildings of Helsinki, each colored by the year it was built in. Click on a buiding to see pictures retrieved from <a href="www.finna.fi">Finna</a>. You can search for an address or district with the fields below.</div>
-        <div class="span4"><p> Existing buildings based on Helsinki building registry. Old buildings digitized from old aerial images, maps and building permits.<br>
-          (Based on Helsinki building age viewer by Jan Wolski (<a href="https://twitter.com/jan_wolski">@jan_wolski</a>) and <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app)</div>
+        <div class="span4"><p> Existing buildings based on Helsinki building registry. Demolished buildings digitized from old aerial images, maps and building permits.<br>
+          Buildings from the Swedish era are mostly speculative as records are scarce. Digitization work made by Christoffer Weckström.
+          App based on Helsinki building age viewer by Jan Wolski and <a href="http://dev.hel.fi/ilmakuvat/">Helsinki ilmakuvina</a> web app.</div>
         </div>
 
         <hr>
@@ -191,7 +198,7 @@
       <div class="row">
         <button type="button" id="play-btn" class="btn btn-default btn-lg span1"><span class="glyphicon glyphicon-play"></span></button>
         <div class="span7">
-          <div style="font-size: 14px; text-align: center;"><span style="float:left">1800</span>1912<span style="float:right">2030</span></div>
+          <div style="font-size: 14px; text-align: center;"><span style="float:left">1721</span>1875<span style="float:right">2030</span></div>
           <div id="slider" class="span7"></div>
         </div>
       </div>  
@@ -199,13 +206,6 @@
 
     <script type="text/javascript" src="js/bage.js"></script>
     <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-      ga('create', 'UA-45171568-1', 'hel.fi');
-      ga('send', 'pageview');
 
     </script>
 </body>
